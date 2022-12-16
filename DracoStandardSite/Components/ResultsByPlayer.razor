@@ -1,0 +1,183 @@
+﻿
+
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Player Results</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (RList == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+                <DisplayPlayerArmyStats PID=@PID></DisplayPlayerArmyStats>
+
+                    @if(RList.Count>=1){ player =RList.First().Name; }
+                      <h3>@player</h3>
+                    
+                    <h4>Current Results</h4>
+                    <table class="table table-hover table-sm text-align: center ">
+                        <thead class="thead-dark">
+                            <tr>
+
+                                
+                                <th>
+                                    Competition
+                                </th>
+                                <th>
+                                    Position
+                                </th>
+                                <th>
+                                    Army
+                                </th>
+                                <th>
+                                    Points
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var playerresult in RList)
+                            {
+                                @if (!(bool)playerresult.Old)
+                                {
+                                   <tr>
+                                    <td>
+                                        @playerresult.Comp
+                                    </td>
+                                    <td>
+                                        @playerresult.Position /                                
+                                        @playerresult.Players
+                                    </td>
+                                    <td>
+                                        @playerresult.Army
+                                    </td>
+                                    <td>
+                                        @playerresult.Points
+                                    </td>
+
+             
+                                </tr> 
+                                }
+                                
+                            }
+                        </tbody>
+                    </table>
+
+                }
+                <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off" @bind="showOld">
+                <label class="btn btn-primary" for="btn-check">Show old results</label>
+                @if (showOld)
+                {
+                    <h4>Old Results</h4>
+                    <table class="table table-hover table-sm text-align: center ">
+                        <thead class="thead-dark">
+                            <tr>
+
+                                
+                                <th>
+                                    Competition
+                                </th>
+                                <th>
+                                    Position
+                                </th>
+                                <th>
+                                    Army
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var playerresult in RList)
+                            {
+                                @if ((bool)playerresult.Old)
+                                {
+                                   <tr>
+                                    <td>
+                                        @playerresult.Comp
+                                    </td>
+                                    <td>
+                                        @playerresult.Position
+                                    </td>
+                                    <td>
+                                        @playerresult.Army
+                                    </td>
+             
+                                </tr> 
+                                }
+                                
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code {
+
+    [Parameter] public Guid PID { get; set; }
+
+    private bool showOld;
+
+    List<PlayerResult> RList;
+    private string player;
+
+
+    public Guid Guid = Guid.NewGuid();
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    public bool ShowBackdrop = false;
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+
+
+    protected override async Task OnParametersSetAsync ()
+
+    {
+
+        RList = await service.GetPlayerResults(PID);
+
+       
+
+    }
+}

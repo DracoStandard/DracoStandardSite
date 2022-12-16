@@ -1,0 +1,55 @@
+﻿
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+
+@if (cList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+ 
+
+
+<ul class = "list-group">
+      @foreach (var comp in cList)
+            {
+       
+
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+     
+
+                <RecentResults CID=@comp.CompId/>
+                
+            </li>
+            }
+
+     </ul>
+
+
+
+
+
+}
+@code {
+        [Parameter]
+    public bool old { get; set; }
+
+    List<Comp> cList;
+    
+    Guid CID;
+    private CompResults compModal { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+
+    {
+
+
+        cList = await service.GetRecentComps();
+       
+       
+    }
+}

@@ -1,0 +1,83 @@
+﻿
+
+@inject NavigationManager NavigationHelper
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+@using Microsoft.AspNetCore.WebUtilities
+
+@if (RList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h3>@army</h3>
+
+    <table class="table table-hover table-sm text-align: center ">
+        <thead class="thead-dark">
+            <tr>
+ 
+                <th>
+                    Player
+                </th>
+                <th>
+                    Competition
+                </th>
+                <th>
+                    Position
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var armyresult in RList)
+            {
+                <tr>
+
+
+                    <td >
+                        @armyresult.Name
+                    </td>
+                    <td >
+                        @armyresult.Competition
+                    </td>
+                    <td >
+                        @armyresult.Position
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+
+
+@code {
+
+    [Parameter]
+    public int AID { get; set; }
+
+    List<ArmyUsed> RList;
+
+    string army;
+
+    protected override async Task OnParametersSetAsync()
+
+    {
+
+
+
+        RList = await service.GetArmyUseds(AID);
+        
+       // army = RList[0].Army;
+    }
+}
+

@@ -1,0 +1,47 @@
+﻿@page "/Rankings"
+@using DracoStandardSite.Components
+<h1>Mortem et Gloriam Player Rankings</h1>
+
+
+<div class="form-check">
+    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="MEG" checked @onchange="changeEvent">
+    <label class="form-check-label" for="flexRadioDefault1">
+        MeG
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="REG"   @onchange="changeEvent">
+    <label class="form-check-label" for="flexRadioDefault2">
+        ReG
+    </label>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <RankedPlayers gameSystem=@gameSystem/>
+            </div>
+            <div class="col">
+                <CompList old="false"></CompList>
+                <CompList old="true"></CompList>
+            </div>
+        </div>
+</div>
+
+@code{
+    public string gameSystem;
+
+    public void changeEvent(ChangeEventArgs args)
+    {
+        gameSystem = (string)args.Value;
+        StateHasChanged();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        gameSystem = "MEG";
+    }
+
+}

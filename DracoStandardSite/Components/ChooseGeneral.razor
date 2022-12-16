@@ -1,0 +1,86 @@
+﻿@using DracoStandardSite.Models
+@using DracoStandardSite.Data
+
+@inject IArmyBuilderService service
+@inject NavigationManager NavigationHelper
+
+
+
+
+        <div class="row">
+            <div class="col">
+               @if (cinc)
+        {
+            <h5>C-in-C</h5>
+            
+        }
+        else
+        {
+            <h5>Sub</h5>
+        }
+            </div>
+
+            <div class="col">
+        <select class="form-select form-select-sm" aria-label=".form-select-sm quality" @bind="myGeneral.type" @bind:event="oninput" @onchange="changedGen">
+            
+            @for (int i = 0; i < myGeneral.typeList.Count();i++)
+                    {
+                <option value="@myGeneral.typeList[i]">@myGeneral.typeList[i]</option>
+                    }
+   
+        
+                </select>
+            </div>
+            <div class="col">
+                @if(!cinc){
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="ally" @bind="ally"  @bind:event="oninput" @onchange="changedGen" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault"><span class ="badge bg-warning">Ally</span></label>
+                 </div>
+                }
+            </div>
+
+           <div class="col">
+               @myGeneral.points
+           </div>
+
+
+        </div>
+
+@code {
+    [Parameter] public General myGeneral { get; set; }
+
+    [Parameter] public bool cinc { get; set; }
+    [Parameter] public bool ally { get; set; }
+
+    public IEnumerable<Generals> genPoints { get; set; }
+
+    string genType;
+
+    protected override async Task OnInitializedAsync()
+
+    {
+        
+        genPoints = await service.getGeneralPoints();
+
+    }
+
+    private void changedGen(ChangeEventArgs e)
+    {
+        if (cinc) { myGeneral.isCinC = true; }
+        // myGeneral.type = (string)e.Value;
+        if(ally) { myGeneral.isAlly = true; myGeneral.position = "Ally"; } else 
+        {
+            if(!cinc){myGeneral.isAlly=false; myGeneral.position = "Sub"; }
+        }
+        IEnumerable<Generals> thisPoints = genPoints.Where(genPoints => (genPoints.Grade == myGeneral.type)).Where(genPoints => (genPoints.position == myGeneral.position));
+        if (thisPoints.Count() > 0)
+        {
+            myGeneral.points = thisPoints.First().points;
+        }
+        else{
+            myGeneral.points = 0;
+        }
+        StateHasChanged();
+    }
+}

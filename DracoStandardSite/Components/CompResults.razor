@@ -1,0 +1,130 @@
+﻿
+
+
+@inject NavigationManager NavigationHelper
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+@using Microsoft.AspNetCore.WebUtilities
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Competition Results</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (CRList == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+
+
+
+
+
+                    @if (CRList.Count >= 1) { comp = CRList.First().Comp; }
+<h3>@comp</h3>
+    <table class="table table-hover table-sm text-align: center ">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Player
+                </th>
+                <th>
+                    Army
+                </th>
+      
+
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var compres in CRList)
+            {
+            <tr>
+
+                <td>
+                    @compres.Position
+                </td>
+
+                <td>
+                    @compres.Name
+                </td>
+                <td>
+                    @compres.Army
+                </td>
+
+          
+
+
+            </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+                
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+
+    [Parameter]
+    public Guid CID { get; set; }
+
+    List<CompResult> CRList;
+    string comp;
+
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    public bool ShowBackdrop = false;
+
+
+    protected override async Task OnParametersSetAsync()
+
+    {
+
+        CRList = await service.GetCompResults(CID);
+
+        
+    }
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+}
