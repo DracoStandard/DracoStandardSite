@@ -1,0 +1,57 @@
+﻿@page "/"
+
+@using DracoStandardSite.Components
+@using DracoStandardSite.Pages
+
+<PageTitle>DracoStandard</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+
+
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Top Players</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">MEG</h6>
+                    <p class="card-text">
+                        <TopPlayers gameSystem="MEG"></TopPlayers>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Top Players</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">REG</h6>
+                    <p class="card-text">
+                        <TopPlayers gameSystem="REG"></TopPlayers>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                 <h5 class="card-title">Most Recent Results</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">REG</h6>
+                    <p class="card-text">
+                        <RecentComps></RecentComps>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    
+}

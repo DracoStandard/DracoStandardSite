@@ -1,0 +1,68 @@
+﻿@using DracoStandardSite.Models
+@using DracoStandardSite.Data
+
+@inject IArmyBuilderService service
+@inject NavigationManager NavigationHelper
+
+
+
+
+<div class="row">
+    <div class="col">
+        Quality
+    </div>
+
+    <div class="col">
+        <select class="form-select form-select-sm" aria-label=".form-select-sm quality" @bind="armyCamp.Quality" @bind:event="oninput" @onchange="changedQual">
+            <option selected value=@armyCamp.QualList[0]>@armyCamp.QualList[0]</option>
+            <option value=@armyCamp.QualList[1]>@armyCamp.QualList[1]</option>
+            <option value=@armyCamp.QualList[2]>@armyCamp.QualList[2]</option>
+            <option value=@armyCamp.QualList[3]>@armyCamp.QualList[3]</option>
+        </select>
+    </div>
+</div>
+
+<div class="row">
+        <div class="col">
+            Type
+        </div>
+        <div class="col">
+        <select class="form-select form-select-sm" aria-label=".form-select-sm type" @bind="armyCamp.Type" @bind:event="oninput" @onchange="changedCamp">
+            <option selected value=@armyCamp.TypeList[0]>@armyCamp.TypeList[0]</option>
+            <option value=@armyCamp.TypeList[1]>@armyCamp.TypeList[1]</option>
+            <option value=@armyCamp.TypeList[2]>@armyCamp.TypeList[2]</option>
+            <option value=@armyCamp.TypeList[3]>@armyCamp.TypeList[3]</option>
+            <option value=@armyCamp.TypeList[4]>@armyCamp.TypeList[4]</option>
+            </select>
+        </div>
+    <div class="row">
+        <div class="col">Points</div>
+        <div class="col">@armyCamp.points</div></div>
+ </div>
+
+
+
+
+@code {
+    [Parameter] public Camp? armyCamp { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        armyCamp = new Camp();
+    }
+    private void changedCamp(ChangeEventArgs e)
+    {
+        armyCamp.Type = (string)e.Value;
+        armyCamp.calcPoints();
+        StateHasChanged();
+    }
+    private void changedQual(ChangeEventArgs e)
+    {
+        armyCamp.Quality = (string)e.Value;
+        armyCamp.calcPoints();
+        StateHasChanged();
+    }
+
+
+
+}

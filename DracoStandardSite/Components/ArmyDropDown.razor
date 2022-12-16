@@ -1,0 +1,62 @@
+﻿
+@using DracoStandardSite.Models
+@using DracoStandardSite.Data
+
+@inject IArmyBuilderService service
+@inject NavigationManager NavigationHelper
+
+<BlazoredTypeahead SearchMethod="SearchArmies"
+      TValue="ArmyIndex"
+      TItem="ArmyIndex"
+      Value="selectedResult"
+      ValueChanged="onArmyChanged"
+      ValueExpression="@(()=>selectedResult)"
+      placeholder="search by army name"
+      EnableDropDown="true">
+
+    <SelectedTemplate>@context.Army</SelectedTemplate>
+    <ResultTemplate>@context.Army</ResultTemplate>
+   
+</BlazoredTypeahead>
+
+
+
+@code {
+
+
+
+    [Parameter] 
+    public IEnumerable<ArmyIndex> armies { get; set; }
+    [Parameter]
+    public int AID { get; set; }
+    public int uGiD { get; set; }
+
+    [Parameter] 
+    public ArmyIndex? selectedResult {get; set;}
+
+    [Parameter]
+    public EventCallback<ArmyIndex> onArmyChanged{ get; set; }
+
+
+    private async Task resultChanged(ArmyIndex result)
+    {
+        selectedResult = result;
+        await onArmyChanged.InvokeAsync(selectedResult);
+    }
+
+    private async Task<IEnumerable<ArmyIndex>> SearchArmies(string searchText)
+    {
+        
+        return await Task.FromResult(armies!.Where(x => x.Army.ToLower().Contains(searchText.ToLower())).ToList());
+    }
+
+  
+
+    protected override async Task OnInitializedAsync()
+
+    {//test value AID = 2318;
+       
+       armies = await service.GetArmies();
+    }
+
+}

@@ -1,0 +1,86 @@
+﻿<h3>Players</h3>
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+
+@inject NavigationManager UriHelper
+
+
+
+
+@if (RList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+
+{
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+
+
+        @foreach (var player in RList)
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#P@(player.Position +gameSystem)" aria-expanded="false" aria-controls="flush-collapseOne">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">@player.Position                               
+                                @player.Name</div>
+                            Score: @player.RankScore
+                        </div>
+                        <span class="badge bg-primary rounded-pill">@player.CompsPlayed</span>
+
+                    </button>
+                </h2>
+                <div id="P@(player.Position +gameSystem)" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <div class="container">
+
+
+                            <ResultsByPlayer PID=@player.PlayerId></ResultsByPlayer>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+
+}
+
+
+
+@code {
+
+    public bool PlayerDialogOpen { get; set; }
+
+
+    List<AllRankings> RList;
+
+    [Parameter] public string gameSystem { get; set; }
+    [Parameter] public bool topFive { get; set; }
+
+    Guid PID;
+
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+
+        RList = await service.getRankings(gameSystem, topFive);
+        
+    }
+
+
+
+
+
+   
+}

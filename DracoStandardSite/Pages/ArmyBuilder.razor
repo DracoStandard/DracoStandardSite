@@ -1,0 +1,371 @@
+﻿@page "/ArmyBuilder/"
+
+@using DracoStandardSite.Components
+@inject NavigationManager NavigationHelper
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+@using System.IO
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@inject IArmyBuilderService service
+
+@inject IJSRuntime JS
+
+
+@if (UgList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container">
+        <h1>Army Builder</h1>
+       
+        
+
+
+        @if (AID != 0)
+
+        {
+            <div class="row">
+                <div class="col">
+                    <h2>@armyName</h2>
+                </div>
+                <div class="col">
+                    <h2>Total Points: @newForce.totalPoints</h2>
+                </div>
+
+            </div>
+            <div class="row">
+
+                   
+                <div class="col">
+                    <div class="card text-white bg-secondary mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title">Generals</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <ChooseGeneral myGeneral="@armyGenerals[0]" cinc=true></ChooseGeneral>
+                        </div>
+                        <div class="row">
+                            <ChooseGeneral myGeneral="@armyGenerals[1]"></ChooseGeneral>
+                        </div>
+                         <div class="row">
+                            <ChooseGeneral myGeneral="@armyGenerals[2]"></ChooseGeneral>
+                        </div>
+                        <div class="row">
+                            <ChooseGeneral myGeneral="@armyGenerals[3]"></ChooseGeneral>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                    <div class="col">
+                    <div class="card text-white bg-secondary mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title">Camp</h5>
+                    </div>
+                          <ChooseCamp armyCamp="@armyCamp"></ChooseCamp>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                  <UgDropDown onUgChanged=@updateSelectedUg AID=@AID />
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-danger" @onclick="resetPage">cancel</button>
+                </div>
+            </div> 
+            <form>
+                <h2> TUGs</h2>
+                <div class="table-responsive">
+                <table class="table align-middle table-sm">
+                <thead class= "table-light">
+                    <tr>
+                        <th class="text-center"scope="col" rowspan=2>TUG No</th>
+                        <th class="text-center"scope="col" rowspan=2>Description</th>
+                        <th class="text-center"scope="col">Type</th>
+                        <th class="text-center"scope="col">Quality</th>
+                        <th class="text-center" scope="col">Shooting</th>
+                        <th class="text-center" scope="col" rowspan=2>Melee</th>
+                        <th class="text-center" scope="col" rowspan=2>Chars</th>
+                        <th class ="text-center" scope="col" rowspan=2>Bases</th>
+                            <th class="text-center" scope="col" rowspan=2>Points</th>
+                        <th class="text-center"scope="col" rowspan=2>Update</th>
+                        <th class="text-center"scope="col" rowspan=2>Delete</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center"scope="col">Formation</th>
+                        <th class="text-center"scope="col">Protection</th>
+                        <th class="text-center"scope="col">Weapon</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+
+                @foreach (UGdetails u in UgList)
+                {
+                    
+                    @if (u.Description != null && u.Class=="TUG")
+                    {
+                      <DisplayUG ugData=@u onUgChanged=@updatePage></DisplayUG>
+                    }
+
+                }
+                </tbody>
+            </table>
+            </div>
+             <h2> SUGs</h2>
+             <div class="table-responsive">
+                <table class="table align-middle table-sm">
+                <thead class= "table-light">
+                    <tr>
+                        <th class="text-center"scope="col" rowspan=2>TUG No</th>
+                        <th class="text-center"scope="col" rowspan=2>Description</th>
+                        <th class="text-center"scope="col">Type</th>
+                        <th class="text-center"scope="col">Quality</th>
+                        <th class="text-center" scope="col">Shooting</th>
+                        <th class="text-center" scope="col" rowspan=2>Melee</th>
+                        <th class="text-center" scope="col" rowspan=2>Chars</th>
+                        <th class ="text-center" scope="col" rowspan=2>Bases</th>
+                            <th class="text-center" scope="col" rowspan=2>Points</th>
+                        <th class="text-center"scope="col" rowspan=2>Update</th>
+                        <th class="text-center"scope="col" rowspan=2>Delete</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center"scope="col">Formation</th>
+                        <th class="text-center"scope="col">Protection</th>
+                        <th class="text-center"scope="col">Weapon</th>
+                    </tr>
+
+                </thead>
+
+       
+                
+
+                <tbody>
+
+
+                @foreach (UGdetails u in UgList)
+                {
+                    
+                    @if (u.Description != null && u.Class=="SUG")
+                    {
+                      <DisplayUG ugData=@u onUgChanged=@updatePage></DisplayUG>
+                    }
+
+                }
+                </tbody>
+            </table>
+            </div>
+            </form>
+                
+
+
+            <div class="row">
+                <button type="button" class="btn btn-primary" @onclick="outputJson">save</button>
+            </div>
+
+
+            <div class="row">
+              <!--  <UGList AID=@AID></UGList>-->
+            </div>
+        }
+
+        else
+        {
+            <div class="row">
+             <ArmyDropDown onArmyChanged=@updateSelectedArmy />
+        </div>
+        }
+     </div>
+     }
+
+
+
+
+
+
+@code {
+    [Parameter]
+    public int AID { get; set; }
+    public string armyName{ get; set; }
+    public string outJSON{ get; set; }
+    public string UgJSON{ get; set; }
+    public int AIDint { get; set; }
+    [Parameter]
+    public armyBuilderTroops selectedUg{ get; set; }
+
+    public Force newForce { get; set; }
+
+    List<armyBuilderTroops> AllUgList;
+    List<UGdetails> UgList;
+    List<UGdetails> SugList;
+
+    public Camp armyCamp;
+    public List<General> armyGenerals;
+
+
+
+
+    private void updateSelectedUg(armyBuilderTroops ug)
+    {
+        UGdetails newUg = new UGdetails(ug);
+        if (UgList.Count==0)
+        { newUg.Ugno = 1; }
+        else
+        { newUg.Ugno = UgList.Max(r => r.Ugno) + 1; }
+        UgList.OrderBy(p => p.Ugno);
+        UgList.Add(newUg);
+
+        cleanList();
+
+        StateHasChanged();
+    }
+
+    private void updateSelectedArmy(ArmyIndex army)
+    {
+        AID = (int)army.No;
+        armyName = army.Army;
+        StateHasChanged();
+    }
+
+    private void updatePage()
+    {
+        cleanList();
+
+        newForce.calcPoints();
+
+        StateHasChanged();
+    }
+
+    private void resetPage()
+    {
+        AID = 0;
+        UgList = new List<UGdetails>();
+
+        //remove force
+        //make new force
+
+        newForce = new Force();
+        newForce.armyNumber = AIDint;
+        // newForce.tugs;
+        newForce.tugs = UgList;
+        newForce.sugs = SugList;
+        armyCamp = new Camp();
+
+        newForce.camp = armyCamp;
+        armyGenerals = new List<General>();
+
+        General newGeneral = new General(true);
+        armyGenerals.Add(newGeneral);
+        for (int i = 0; i <= 2; i++)
+        {
+            newGeneral = new General(false);
+            armyGenerals.Add(newGeneral);
+        }
+        newForce.generals = armyGenerals;
+
+        StateHasChanged();
+    }
+
+
+
+    private async Task outputJson()
+    {
+
+        DownloadFileFromStream();
+
+
+
+
+    }
+    private Stream GetFileStream()
+    {
+        string jsonOut = JsonConvert.SerializeObject(newForce, Formatting.Indented);
+        byte[] byteArray = System.Text.ASCIIEncoding.ASCII.GetBytes(jsonOut);
+
+        var fileStream = new MemoryStream(byteArray);
+
+        return fileStream;
+    }
+
+    private async Task DownloadFileFromStream()
+    {
+        var fileStream = GetFileStream();
+        var fileName = "test.json";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+
+    {
+
+        armyName = "none";
+
+
+
+        UgList = new List<UGdetails>();
+        SugList = new List<UGdetails>();
+        AllUgList = await service.GetUGs(AID);
+
+        //player = RList[0].Name;
+
+
+        //TestUgJSON = JsonSerializer.Serialize(AllUgList.First());
+        //@"{""UG"":{""description"":""spearman"", ""type"":""Infantry"", ""training"":""Drilled"", ""formation"":""close"", ""shooting"":{""skill"":""Experienced"", ""weapon"":""darts""},""melee"":""Long spear"", ""characteristics"":{""a"":""Shove"", ""b"":""shield cover""},}";
+
+
+
+        //make new force
+
+        newForce = new Force();
+        newForce.armyNumber = AIDint;
+        // newForce.tugs;
+        newForce.tugs=UgList;
+        newForce.sugs = SugList;
+        armyCamp = new Camp();
+
+        newForce.camp = armyCamp;
+        armyGenerals = new List<General>();
+
+        General newGeneral = new General(true);
+        armyGenerals.Add(newGeneral);
+        for(int i=0; i<=2; i++){
+            newGeneral= new General(false);
+            armyGenerals.Add(newGeneral); 
+        }
+        newForce.generals=armyGenerals;
+
+
+    }   
+    private void cleanList()
+    {
+        UgList.RemoveAll(x => x.delFlag == true);
+        UgList.RemoveAll(x => x.Description == null);
+
+
+
+    }
+
+    private void loadJson(string jsonString)
+    {
+        newForce = new Force();
+        newForce = JsonConvert.DeserializeObject<Force>(jsonString);
+    }
+
+
+    }
+    

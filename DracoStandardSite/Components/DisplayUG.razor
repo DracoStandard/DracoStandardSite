@@ -1,0 +1,240 @@
+﻿
+
+@inject NavigationManager NavigationHelper
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+
+@inject IArmyBuilderService service
+@using Microsoft.AspNetCore.WebUtilities
+
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Newtonsoft.Json.Linq;
+
+
+
+
+
+
+@if(ugData.Type != null )
+    {<tr>
+        <td class="text-center" rowspan=2><input class="form-control" type="text" placeholder="Default input" aria-label="ug number" @bind="ugData.Ugno" /></td>
+        <td class="text-center" rowspan=2>@ugData.Description</td>
+        <td class="text-center">@ugData.Type</td>
+        <td class="text-center">
+            
+            <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="qualityDowngrade" @onchange="downgradeQuality" >
+                        <label class="form-check-label" for="flexSwitchCheckDefault"><span class ="badge bg-warning"> @ugData.Quality </span></label>
+            </div>
+            
+        </td>
+        <td class="text-center">
+            @if (ugData.Shooting.grade != "-")
+            {
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="shootingDowngrade" @onchange ="downgradeShooting" >
+                        <label class="form-check-label" for="flexSwitchCheckDefault"><span class ="badge bg-warning"> @ugData.Shooting </span></label>
+                </div>
+            }
+            else
+            {
+                @ugData.Shooting
+            }
+        </td>
+        <td class="text-center" rowspan=2>@ugData.Melee</td>
+        <td class="text-center" rowspan=2>
+            @foreach (ugCharacteristic chari in ugData.Characteristics)
+        {
+                if (chari.charType == "mandatory")
+                {
+                    <span class ="badge bg-success"> @chari.charName </span>
+                }
+                else
+                {
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="@chari.charName" @bind="chari.selected"  >
+                        <label class="form-check-label" for="flexSwitchCheckDefault"><span class ="badge bg-warning"> @chari.charName </span></label>
+                    </div>
+                    
+                }
+
+        } </td>
+        <td class ="text-center" rowspan=2><input class="form-control" type="text" placeholder="Default input" aria-label="no of bases" @bind="ugData.Bases" /></td>
+        <td class ="text-center"> @totalPts</td>
+        <td class="text-center" rowspan=2><button type="button" class="btn btn-warning" @onclick="updateUg">update</button></td>
+        <td class="text-center" rowspan=2><button type="button" class="btn btn-close" @onclick="deleteUg"></button></td>
+
+
+    </tr>
+
+    <tr>
+        <td class="text-center">@ugData.Formation</td>
+        <td class="text-center">@ugData.Protection</td>
+        <td class="text-center">@ugData.ShootingWeap</td>
+        <td class="text-center">@ugData.PtsPerBase</td>
+    </tr>
+      
+
+    }
+
+
+ 
+
+
+
+@code {
+
+    [Parameter]
+    public UGdetails ugData { get; set; }
+    [Parameter]
+    public int ugNo { get; set; }
+
+    public int totalPts { get; set; }
+    public int basePts { get; set; }
+
+    private Dictionary<string, int> points { get; set; }
+    private Dictionary<string, double>multipliers{ get; set; }
+
+    [Parameter]
+    public EventCallback<UGdetails> onUgChanged{ get; set; }
+
+    
+
+    protected override async Task OnInitializedAsync()
+
+    {
+        points = new Dictionary<string, int>();
+        points = await service.GetArmyBuilderPoints();
+
+        multipliers = new Dictionary<string, double>();
+        multipliers = await service.GetArmyBuilderMultipliers();
+
+
+
+    }
+    protected override async Task OnParametersSetAsync ()
+    {
+        basePts = (int)calcPoints(ugData);
+        totalPts = basePts * (int)ugData.Bases;
+        ugData.PtsPerBase = basePts;
+        ugData.TotalPts = totalPts;
+    }
+
+    private void updateChar(ugCharacteristic c, object checkedValue)
+    {
+        //change status
+         c.selected = (bool)checkedValue;
+       // string x = args.ToString();
+
+        //recalc points
+
+        updatePage();
+    }
+
+    private async Task updatePage()
+    {
+        // AID = 0;
+        // UgList = new List<UGdetails>();
+        basePts = (int)calcPoints(ugData);
+        totalPts = basePts * (int)ugData.Bases;
+
+        await onUgChanged.InvokeAsync(ugData);
+
+        StateHasChanged();
+    }
+
+    private async Task deleteUg()
+    {
+        ugData.delFlag = true;
+
+        await onUgChanged.InvokeAsync(ugData);
+
+        StateHasChanged();
+    }
+    private async Task updateUg()
+    {   totalPts = (int)calcPoints(ugData);
+        await onUgChanged.InvokeAsync(ugData);
+
+        StateHasChanged();
+    }
+
+    private async Task downgradeShooting()
+    {
+        ugData.Shooting.regrade();
+
+        await onUgChanged.InvokeAsync(ugData);
+    }
+
+    private async Task downgradeQuality()
+    {
+        ugData.Quality.regrade();
+
+        await onUgChanged.InvokeAsync(ugData);
+    }
+
+
+   
+
+
+
+    public float calcPoints(UGdetails thisUg)
+    {
+        float pts=0;
+
+        //get base points
+
+        string indexSearch = thisUg.Class + ":"+thisUg.Formation+":" + thisUg.Type;
+
+
+        pts += (float)points[indexSearch];
+
+        //get shooting points
+        if (thisUg.Shooting.ToString().Length > 2 && thisUg.ShootingWeap.Length > 2)
+        {
+
+            indexSearch = thisUg.Class + ":" + thisUg.ShootingWeap + ":" + thisUg.Type;
+            float shootpts = (float)points[indexSearch];
+
+            //shooting multiplier
+            indexSearch = thisUg.Class + ":" + thisUg.Shooting;
+            pts += shootpts * (float)multipliers[indexSearch];
+        }
+
+        // get melee points
+
+        indexSearch=thisUg.Class + ":"+thisUg.Melee+":" + thisUg.Type;
+        pts += (float)points[indexSearch];
+
+        // get char points
+        foreach(ugCharacteristic c in thisUg.Characteristics)
+        {
+            if (c.selected)
+            {
+                indexSearch=thisUg.Class + ":"+c.charName+":" + thisUg.Type;
+                pts += (float)points[indexSearch];
+            }
+        }
+
+
+        //multipliers
+
+        indexSearch=thisUg.Class + ":"+thisUg.Quality;
+        pts = pts * (float)multipliers[indexSearch];
+
+        indexSearch=thisUg.Class + ":"+thisUg.Protection;
+
+        pts = pts * (float)multipliers[indexSearch];
+
+
+        return pts;
+    }
+  
+
+}

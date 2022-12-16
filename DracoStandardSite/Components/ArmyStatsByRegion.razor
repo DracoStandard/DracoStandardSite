@@ -1,0 +1,74 @@
+﻿@using DracoStandardSite.Components
+
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+
+
+
+<h3>ArmyStats</h3>
+
+
+@if (aList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        @foreach (ArmyRankBoost army in aList)
+        {
+
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#A@(army.ArmyId)" aria-expanded="false" aria-controls="flush-collapseOne">
+                        @army.Army
+
+
+                    </button>
+                </h2>
+                <div id="A@(army.ArmyId)" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <div class="container">
+                            <div class="row">
+
+                                <div class="col">
+                                    Rank: @army.Position
+                                </div>
+                                <div class="col">
+                                    Score: @army.RankScore
+                                </div>
+                                <div class="col">
+                                    Times used: @army.CompsPlayed
+                                </div>
+                                <div class="col">
+                                    Value Added: @army.Boost
+                                </div>
+                            </div>
+                            <div class="row">
+                                <ListArmies AID="@army.ArmyId"></ListArmies>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+
+    [Parameter] public string region { get; set; }
+
+    List<ArmyRankBoost> aList;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        aList = await service.GetArmyRankBoostsByRegion(region);
+    }
+}

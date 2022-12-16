@@ -1,0 +1,95 @@
+﻿@inject NavigationManager NavigationHelper
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+@using Microsoft.AspNetCore.WebUtilities
+
+
+                @if (CRList == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+
+
+
+
+
+                    @if (CRList.Count >= 1) { comp = CRList.First().Comp; }
+                    <h3>@comp</h3>
+                    <table class="table table-hover table-sm text-align: center ">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>
+                                    Position
+                                </th>
+                                <th>
+                                    Player
+                                </th>
+                                <th>
+                                    Army
+                                </th>
+
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var compres in CRList)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @compres.Position
+                                    </td>
+
+                                    <td>
+                                        @compres.Name
+                                    </td>
+                                    <td>
+                                        @compres.Army
+                                    </td>
+
+
+
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                }
+
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public Guid CID { get; set; }
+
+    List<CompResult> CRList;
+    string comp;
+
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    public bool ShowBackdrop = false;
+
+
+    protected override async Task OnParametersSetAsync()
+
+    {
+
+        CRList = await service.GetCompResults(CID);
+
+
+    }
+
+}

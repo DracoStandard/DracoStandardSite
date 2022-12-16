@@ -1,0 +1,159 @@
+﻿<h3>TestBed</h3>
+
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+
+@inject IArmyBuilderService service
+@using Microsoft.AspNetCore.WebUtilities
+
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Newtonsoft.Json.Linq;
+
+<!--@using BlazorTable>-->
+
+@if (UgList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+            <form>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col" rowspan=2>TUG No</th>
+                        <th scope="col" rowspan=2>Description</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Quality</th>
+                        <th scope="col">Shooting</th>
+                        <th scope="col" rowspan=2>Melee</th>
+                        <th scope="col" rowspan=2>Chars</th>
+                        <th scope="col" rowspan=2>Bases</th>
+                        <th scope="col" rowspan=2>Points</th>
+                        <th scope="col" rowspan=2>Update</th>
+                        <th scope="col" rowspan=2>Delete</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">Formation</th>
+                        <th scope="col">Protection</th>
+                        <th scope="col">Weapon</th>
+                    </tr>
+
+                </thead>
+
+
+
+
+
+
+
+
+
+    <tr>
+        <td rowspan=2><input class="form-control" type="text" placeholder="Default input" aria-label="ug number" @bind="u.Ugno" /></td>
+        <td rowspan=2>@u.Description</td>
+        <td>@u.Type</td>
+        <td>
+            
+            @u.Quality
+            
+        </td>
+        <td>
+            
+                @u.Shooting
+            
+        </td>
+        <td rowspan=2>@u.Melee</td>
+        <td rowspan=2> @foreach (ugCharacteristic chari in u.Characteristics)
+        {
+                if (chari.charType == "mandatory")
+                {
+                    <span class ="badge bg-success"> @chari.charName </span>
+                }
+                else
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="@chari.charName" @bind="chari.selected"  >
+                        <label class="form-check-label" for="flexSwitchCheckDefault"> @chari.charName</label>
+                    </div>
+                    
+                }
+
+        } </td>
+        <td rowspan=2><input class="form-control" type="text" placeholder="Default input" aria-label="no of bases" @bind="u.Bases" /></td>
+        <td> 10</td>
+        <td rowspan=2><button type="button" class="btn btn-warning">update</button></td>
+        <td rowspan=2><button type="button" class="btn btn-close" ></button></td>
+
+
+    </tr>
+
+    <tr>
+        <td>@u.Formation</td>
+        <td>@u.Protection</td>
+        <td>@u.ShootingWeap</td>
+        <td><input class="form-control" type="text" placeholder="Default input" aria-label="points per base" @bind="u.PtsPerBase" /></td>
+    </tr>
+      
+
+    }
+
+    
+                }
+            </table>
+            </form>
+}
+
+@code {
+    [Parameter]
+    public int AID { get; set; }
+    public string armyName{ get; set; }
+
+    public int AIDint { get; set; }
+    [Parameter]
+    public AbtroopDatabase selectedUg{ get; set; }
+
+    public Force newForce { get; set; }
+
+    List<armyBuilderTroops> AllUgList;
+    List<UGdetails> UgList;
+
+
+    public UGdetails u;
+
+
+    protected override async Task OnInitializedAsync()
+
+
+    {
+        u = new UGdetails();
+
+        AID = 1101;
+
+
+        UgList = new List<UGdetails>();
+
+
+
+
+        AllUgList = await service.GetUGs(AID);
+
+        for(int i=0; i<4; i++)
+        {
+            UGdetails ug = new UGdetails(AllUgList[i]);
+            UgList.Add(ug);
+
+        }
+
+        u = UgList[1];
+
+    }   
+
+}

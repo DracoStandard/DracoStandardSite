@@ -1,0 +1,60 @@
+﻿@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+@if (statList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{<h4>Best Performing Armies</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>
+                    Army
+                </td>
+                <td>
+                    Average Points Achieved
+                </td>
+                <td>
+                    Number of times used
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (PlayerArmyStats army in statList) 
+            { 
+            <tr>
+                <td>
+                    @army.Army
+                </td>
+                <td>
+                    @Math.Round(army.avgPoints)
+                </td>
+                <td>
+                    @army.timesUsed
+                </td>
+            </tr>
+            }
+
+        </tbody>
+    </table>
+
+    }
+    @code {
+        [Parameter] public Guid PID { get; set; }
+
+        List<PlayerArmyStats> statList { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+
+    {
+
+        statList = await service.GetPlayerArmyStats(PID);
+
+
+
+    }
+}

@@ -1,0 +1,125 @@
+﻿
+
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (RList == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+
+                    <h3>@player</h3>
+
+                    <table class="table table-hover table-sm text-align: center ">
+                        <thead class="thead-dark">
+                            <tr>
+
+                                <th>
+                                    Army
+                                </th>
+                                <th>
+                                    Competition
+                                </th>
+                                <th>
+                                    Position
+                                </th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var playerresult in RList)
+                            {
+                                <tr>
+
+
+                                    <td>
+                                        <NavLink href="@($"ListArmies/{playerresult.ArmyId}")">@playerresult.Army</NavLink>
+                                    </td>
+                                    <td>
+                                        <NavLink href="@($"CompResults/{playerresult.CompId}")">@playerresult.Comp</NavLink>
+                                    </td>
+                                    <td>
+                                        @playerresult.Position
+                                    </td>
+
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code {
+
+    [Parameter] public Guid PID { get; set; }
+
+
+
+    List<PlayerResult> RList;
+    private string player;
+
+
+    public Guid Guid = Guid.NewGuid();
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    public bool ShowBackdrop = false;
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+
+
+    protected override async Task OnParametersSetAsync ()
+
+    {
+
+        RList = await service.GetPlayerResults(PID);
+
+
+    }}

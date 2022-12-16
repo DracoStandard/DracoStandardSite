@@ -1,0 +1,66 @@
+﻿
+@using DracoStandardSite.Models
+@using DracoStandardSite.Data
+
+@inject IArmyBuilderService service
+@inject NavigationManager NavigationHelper
+
+<BlazoredTypeahead SearchMethod="SearchUgs"
+      TValue="armyBuilderTroops"
+      TItem="armyBuilderTroops"
+      Value="selectedResult"
+      ValueChanged="resultChanged"
+      ValueExpression="@(()=>selectedResult)"
+      placeholder="search by description"
+      EnableDropDown="true"
+      MaximumSuggestions="30">
+
+    <SelectedTemplate>@context.Description</SelectedTemplate>
+    <ResultTemplate>@context.Description</ResultTemplate>
+   
+</BlazoredTypeahead>
+
+
+
+@code {
+
+
+
+    [Parameter] 
+    public IEnumerable<armyBuilderTroops> UGs { get; set; }
+    [Parameter]
+    public int AID { get; set; }
+    public int uGiD { get; set; }
+
+    [Parameter] 
+    public armyBuilderTroops selectedResult {get; set;}
+
+    [Parameter]
+    public EventCallback<armyBuilderTroops> onUgChanged{ get; set; }
+
+
+    private async Task resultChanged(armyBuilderTroops result)
+    {
+        selectedResult = result;
+        await onUgChanged.InvokeAsync(selectedResult);
+    }
+
+    private async Task<IEnumerable<armyBuilderTroops>> SearchUgs(string searchText)
+    {
+
+        return await Task.FromResult(UGs.Where(x => x.Description.ToLower().Contains(searchText.ToLower())).ToList());
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+
+    {//test value 
+      
+
+       
+
+        UGs = await service.GetUGs(AID);
+    }
+
+}
