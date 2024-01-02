@@ -30,6 +30,8 @@ namespace DracoStandardSite.Data
 
         Task<List<Comp>> GetRecentComps();
 
+
+
     }
 
     public class RankingsService : IRankingsService

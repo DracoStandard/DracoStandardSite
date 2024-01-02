@@ -1,0 +1,56 @@
+﻿<h3>Armies</h3>
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+@using BlazorTable
+
+@inject IRankingsService service
+
+@inject NavigationManager UriHelper
+
+
+@if (RList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+
+{
+<Table TableItem="ArmyRankBoost" Items="RList" PageSize="15">
+    <Column TableItem="ArmyRankBoost" Title="ArmyId" Field="@(x => x.ArmyId)" Sortable="true" Filterable="true" Width="10%" />
+    <Column TableItem="ArmyRankBoost" Title="Army" Field="@(x => x.Army)" Sortable="true" Filterable="true" Width="20%" />
+    <Column TableItem="ArmyRankBoost" Title="CompsUsed" Field="@(x => x.CompsPlayed)" Sortable="true" Filterable="true" Width="20%" />
+    <Column TableItem="ArmyRankBoost" Title="RankScore" Field="@(x => x.RankScore)" Sortable="true" Filterable="true" Width="10%" />
+    <Column TableItem="ArmyRankBoost" Title="ValueAdded" Field="@(x => x.Boost)" Sortable="true" Filterable="true" Width="10%" />
+
+    <Pager ShowPageNumber="true" ShowTotalCount="true" />
+</Table>
+}
+
+
+
+
+@code {
+
+
+    List<ArmyRankBoost> RList;
+
+
+
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+
+        RList = await service.GetArmyRankBoosts();
+    }
+
+
+
+
+
+
+}

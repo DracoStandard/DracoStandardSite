@@ -1,3 +1,4 @@
+using BlazorTable;
 using DracoStandardSite.Areas.Identity;
 using DracoStandardSite.Data;
 using Microsoft.AspNetCore.Components;
@@ -26,6 +27,9 @@ builder.Services.AddTransient<rankingsContext>();
 
 builder.Services.AddTransient<IArmyBuilderService, ArmyBuilderService>();
 builder.Services.AddTransient<IRankingsService, RankingsService>();
+
+
+builder.Services.AddBlazorTable();
 
 
 var app = builder.Build();
