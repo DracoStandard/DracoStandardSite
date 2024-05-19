@@ -30,7 +30,7 @@ namespace DracoStandardSite.Data
 
         Task<List<Comp>> GetRecentComps();
 
-
+        Task<List<string>> getUniqueRegions();
 
     }
 
@@ -64,6 +64,14 @@ namespace DracoStandardSite.Data
             
 
             return await arb.ToListAsync();
+        }
+
+        public async Task<List<string>> getUniqueRegions()
+        {
+            return await _context.ArmyIndices
+                .Select(ai => ai.Region)
+                .Distinct()
+                .ToListAsync();
         }
 
         public async Task<List<ArmyRankBoost>> GetArmyRankBoosts()
