@@ -11,56 +11,29 @@
 <ArmyRanks></ArmyRanks>
 
 <h3>Army Stats</h3>
+@if (regionList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
 
+{
 <select class="form-select form-select-sm" aria-label=".form-select-sm quality" @bind="region" @bind:event="oninput" @onchange="changedRegion">
-    <option selected>choose region</option>
-    <option value="Chariot - Sumer and Akkad">Chariot - Sumer and Akkad</option>
-    <option value="Chariot - Egypt and Hatti">Chariot - Egypt and Hatti</option>
-    <option value="Chariot - Assyria and Babylon">Chariot - Assyria and Babylon</option>
-    <option value="Classical - The Balkans and Pontic Steppe">Classical - The Balkans and Pontic Steppe</option>
-    <option value="Classical - Egypt and Judaea">Classical - Egypt and Judaea</option>
-    <option value="Classical - Gaul, Germany and Britain">Classical - Gaul, Germany and Britain</option>
-    <option value="Classical - Greece and Macedon">Classical - Greece and Macedon</option>
-    <option value="Classical - Italy">Classical - Italy</option>
-    <option value="Classical - Persia, Iran and India">Classical - Persia, Iran and India</option>
-    <option value="Classical - Spain, Sicily and Africa">Classical - Spain, Sicily and Africa</option>
-    <option value="Classical - Syria and Asia Minor">Classical - Syria and Asia Minor</option>
-    <option value="Early Medieval - Arabia">Early Medieval - Arabia</option>
-    <option value="Early Medieval - Britain">Early Medieval - Britain</option>
-    <option value="Early Medieval - Byzantium">Early Medieval - Byzantium</option>
-    <option value="Early Medieval - Frankia">Early Medieval - Frankia</option>
-    <option value="Early Medieval - The Steppes and Eastern Europe">Early Medieval - The Steppes and Eastern Europe</option>
-    <option value="Asian - Mandate of Heaven">Asian - Mandate of Heaven</option>
-    <option value="Asian - The Warring States and Han Dynasty">Asian - The Warring States and Han Dynasty</option>
-    <option value="Asian - The Three Kingdoms">Asian - The Three Kingdoms</option>
-    <option value="Asian - Tang China">Asian - Tang China</option>
-    <option value="Asian - Genghis">Asian - Genghis</option>
-    <option value="Asian - Land of the Samurai">Asian - Land of the Samurai</option>
-    <option value="Asian - India">Asian - India</option>
-    <option value="Asian - Southeast Asia">Asian - Southeast Asia</option>
-    <option value="Medieval - The Crusades">Medieval - The Crusades</option>
-    <option value="Medieval - Frankokratia">Medieval - Frankokratia</option>
-    <option value="Medieval - House of Osman">Medieval - House of Osman</option>
-    <option value="Medieval - Kings in the North">Medieval - Kings in the North</option>
-    <option value="Medieval - House of Valois">Medieval - House of Valois</option>
-    <option value="Medieval -Holy Roman Empire">Medieval -Holy Roman Empire</option>
-    <option value="Medieval - Ostsiedlung">Medieval - Ostsiedlung</option>
-    <option value="Medieval - Reconquista">Medieval - Reconquista</option>
-    <option value="Medieval - Africa">Medieval - Africa</option>
-    <option value="Medieval - The Italian Wars">Medieval - The Italian Wars</option>
-    <option value="Americas - South America">Americas - South America</option>
-    <option value="Americas - Meso America">Americas - Meso America</option>
-    <option value="Americas - North America and Oceania">Americas - North America and Oceania</option>
+   @foreach (string region in regionList)
+   {
+    <option value="@region">@region</option>
+   }
 </select>
 
 <ArmyStatsByRegion region="@region"></ArmyStatsByRegion>
-
+}
 @code {
 
 
 
     List<ArmyRankBoost> aList;
     string region;
+    List<string> regionList;
 
     private void changedRegion(ChangeEventArgs e)
     {
@@ -71,5 +44,12 @@
     protected override async Task OnInitializedAsync()
     {
         region = "Chariot - Sumer and Akkad";
+
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+
+
+        regionList = await service.getUniqueRegions();
     }
 }
