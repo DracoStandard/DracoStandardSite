@@ -15,5 +15,6 @@ namespace DracoStandardSite.Models
         public string Name { get; set; }
         public string Competition { get; set; }
         public Guid CompId { get; set; }
+        public string Region { get; set; }
     }
 }

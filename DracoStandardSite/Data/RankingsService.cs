@@ -32,6 +32,8 @@ namespace DracoStandardSite.Data
 
         Task<List<string>> getUniqueRegions();
 
+        Task<List<ArmyUsed>> GetAllArmyUseds();
+
     }
 
     public class RankingsService : IRankingsService
@@ -140,6 +142,12 @@ namespace DracoStandardSite.Data
             IQueryable<ArmyUsed> armies = from a in _context.ArmyUseds select a;
             armies = armies.Where(a => a.ArmyId == AID);
             return await armies.ToListAsync();
+        }
+
+        public async Task<List<ArmyUsed>> GetAllArmyUseds()
+        {
+     
+            return await _context.ArmyUseds.ToListAsync();
         }
         public async Task<List<ArmyBoost>> GetArmyBoosts()
         {

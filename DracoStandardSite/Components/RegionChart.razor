@@ -1,0 +1,63 @@
+﻿@using ApexCharts
+@using System.Linq
+@using System.Collections.Generic
+@using DracoStandardSite.Components
+
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+
+<h3>Pie Chart of Army Regions</h3>
+
+@if (aList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+
+
+{
+<ApexChart TItem="ArmyUsed"
+    Title="Army Use by Book">
+
+    <ApexPointSeries TItem="ArmyUsed"
+        Items="aList"
+        Name="reg"
+        SeriesType="SeriesType.Pie"
+        XValue="@(r=>r.Region)"
+        YAggregate="@(r=>r.Count())"
+    ></ApexPointSeries>
+    </ApexChart>
+}
+
+@code {
+    [Parameter]
+    public List<ArmyUsed> aList { get; set; }
+
+    List<ChartData> chartData;
+
+    protected override void OnParametersSet()
+    {
+        if (aList != null)
+        {
+            chartData = aList
+                .GroupBy(a => a.Region)
+                .Select(g => new ChartData { Region = g.Key, Count = g.Count() })
+                .ToList();
+        }
+    }
+
+    public class ChartData
+    {
+        public string Region { get; set; }
+        public int Count { get; set; }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        aList = await service.GetAllArmyUseds();
+    }
+}
