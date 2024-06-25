@@ -19,7 +19,10 @@ else
                 <option value="@region">@region</option>
             }
         </select>
-
+        <div>
+            <input type="checkbox" @bind="filterZeroUsed" />
+            <label for="filterZeroUsed"> Only show armies with 0 uses</label>
+        </div>
         <button @onclick="GenerateRandomArmy">Generate Random Army</button>
 
         @if (randomArmy != null)
@@ -34,11 +37,16 @@ else
     private List<string> regions;
     private HashSet<string> selectedRegions = new();
     private ArmyIndex randomArmy;
+    private bool filterZeroUsed = false;
+
+    private List<ArmyUsed> armyUsedData;
+
 
     protected override async Task OnInitializedAsync()
     {
         armies = await service.GetArmyIndexes();
         regions = armies.Select(a => a.Region).Distinct().ToList();
+        armyUsedData = await service.GetAllArmyUseds();
     }
 
     private void UpdateSelectedRegions(ChangeEventArgs e)
@@ -54,14 +62,24 @@ else
 
     private void GenerateRandomArmy()
     {
-        var filteredArmies = !selectedRegions.Any()
-            ? armies
-            : armies.Where(a => selectedRegions.Contains(a.Region)).ToList();
+   var filteredArmies = armies.AsEnumerable();
 
-        if (filteredArmies.Any())
+        if (selectedRegions.Any())
+        {
+            filteredArmies = filteredArmies.Where(a => selectedRegions.Contains(a.Region));
+        }
+        if (filterZeroUsed)
+        {
+            var usedArmyIds = armyUsedData.Select(a => a.ArmyId).Distinct().ToHashSet();
+            filteredArmies = filteredArmies.Where(a => !usedArmyIds.Contains(a.No));
+        }
+
+        var filteredArmiesList = filteredArmies.ToList();
+
+        if (filteredArmies.Count()>0)
         {
             var random = new Random();
-            randomArmy = filteredArmies[random.Next(filteredArmies.Count)];
+            randomArmy = filteredArmiesList[random.Next(filteredArmies.Count())];
         }
         else
         {
