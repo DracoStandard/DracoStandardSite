@@ -1,16 +1,14 @@
-﻿using System;
-
-namespace DracoStandardSite.Models
+﻿namespace DracoStandardSite.Models
 {
-   
+
     public class General
     {
-        public List<string> typeList { get; set; } 
+        public List<string> typeList { get; set; }
 
         public string type { get; set; }
 
         public bool isAlly { get; set; }
-      
+
         public int points { get; set; }
         public bool isCinC { get; set; }
 
@@ -24,20 +22,21 @@ namespace DracoStandardSite.Models
             isCinC = cinc;
 
             if (isCinC)
-            { 
-                position = "CinC"; 
+            {
+                position = "CinC";
             }
             else
             {
-                if (isAlly) 
-                { 
-                    position = "Ally"; 
+                if (isAlly)
+                {
+                    position = "Ally";
                 }
-                else { position = "Sub"; } }
+                else { position = "Sub"; }
+            }
 
 
 
-            
+
             points = 0;
             typeList = new List<string>();
             //type = "Competent Professional";
@@ -59,7 +58,7 @@ namespace DracoStandardSite.Models
                 typeList.Add(s);
             }
 
-         
+
         }
 
     }

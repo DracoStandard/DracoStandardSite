@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DracoStandardSite.Models
+﻿namespace DracoStandardSite.Models
 {
     public class Force
     {
@@ -31,11 +28,11 @@ namespace DracoStandardSite.Models
             pbs = 0;
             scouting = 0;
             terrain = "none";
-            camp=new Camp();
+            camp = new Camp();
 
             forceDate = "2500BCE";
 
-              
+
 
         }
 
@@ -45,13 +42,14 @@ namespace DracoStandardSite.Models
         }
         public int calcPoints()
         {
-            int pts =0;
-            foreach(UGdetails u in tugs)
+            int pts = 0;
+            foreach (UGdetails u in tugs)
             {
-                pts +=(int) u.TotalPts;
+                pts += (int)u.TotalPts;
 
             }
-            foreach(UGdetails u in sugs){
+            foreach (UGdetails u in sugs)
+            {
                 pts += (int)u.TotalPts;
 
             }
@@ -62,11 +60,11 @@ namespace DracoStandardSite.Models
 
             pts += camp.points;
 
-            totalPoints = pts; 
+            totalPoints = pts;
             return pts;
         }
 
     }
-    
- 
+
+
 }

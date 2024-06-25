@@ -8,7 +8,7 @@
 
 @inject IRankingsService service
 
-<h3>Pie Chart of Army Regions</h3>
+<h3>Army Use by Book</h3>
 
 @if (aList == null)
 {
@@ -17,38 +17,66 @@
 else
 {
     <div style="width: 100%; max-width: 600px; height: 400px; margin: 0 auto;">
-        <ApexChart TItem="ChartData" Title="Army Use by Region">
-            <ApexPointSeries TItem="ChartData"
-                             Items="chartData"
+        <ApexChart TItem="ArmyUsed" Title="Army Use by Region" OnDataPointSelection = "HandlePointClick" @ref=chart>
+
+            <ApexPointSeries TItem="ArmyUsed"
+                             Items="aList"
                              Name="Region"
                              SeriesType="SeriesType.Pie"
                              XValue="@(r => r.Region)"
-                             YValue="@(r => r.Count)">
+                             YAggregate="@(r => r.Count())"
+                             >
+                
             </ApexPointSeries>
         </ApexChart>
     </div>
 }
-
+@if (subChartData != null)
+{
+    <h3>Army use breakdown</h3>
+    <div style="width: 100%; max-width: 600px; height: 400px; margin: 0 auto;">
+        <ApexChart TItem="ArmyUsed" Title="Army Uses" @ref=detailsChart>
+            <ApexPointSeries TItem="ArmyUsed"
+                             Items="subChartData.DataPoint.Items"
+                             Name="Army"
+                             SeriesType="SeriesType.Pie"
+                             XValue="@(r => r.Army)"
+                             YAggregate="@(r => r.Count())">
+            </ApexPointSeries>
+        </ApexChart>
+    </div>
+}
 @code {
     [Parameter]
     public List<ArmyUsed> aList { get; set; }
 
-    private List<ChartData> chartData;
+
+    private SelectedData<ArmyUsed> subChartData;
+
+
+    private string selectedRegion;
+
+    private ApexChart<ArmyUsed> chart;
+    private ApexChart<ArmyUsed> detailsChart;
+
 
     protected override async Task OnParametersSetAsync()
     {
-        if (aList == null)
-        {
-            aList = await service.GetAllArmyUseds();
-        }
+        aList = await service.GetAllArmyUseds();
 
-        if (aList != null)
+    }
+
+    private void HandlePointClick(SelectedData<ArmyUsed> region)
+    {
+        if(!region.IsSelected)
         {
-            chartData = aList
-                .GroupBy(a => a.Region)
-                .Select(g => new ChartData { Region = g.Key, Count = g.Count() })
-                .ToList();
+            subChartData = null;
+            return;
         }
+        subChartData = region;
+   
+
+        detailsChart?.RenderAsync();
     }
 
     public class ChartData
