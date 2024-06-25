@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-#nullable disable
+﻿#nullable disable
 
 namespace DracoStandardSite.Models
 {
@@ -12,7 +9,7 @@ namespace DracoStandardSite.Models
         public Guid CompId { get; set; }
         public string Army { get; set; }
         public int? Position { get; set; }
- 
+
         public double? Points { get; set; }
         public string Comp { get; set; }
         public DateTime? Date { get; set; }

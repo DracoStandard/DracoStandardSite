@@ -1,6 +1,6 @@
 ﻿namespace DracoStandardSite.Models
 {
- 
+
     public class ugCharacteristic
     {
         public string charName { get; set; }

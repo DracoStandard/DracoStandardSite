@@ -1,7 +1,5 @@
-﻿using System;
-using DracoStandardSite.Models;
+﻿using DracoStandardSite.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -19,12 +17,12 @@ namespace DracoStandardSite.Data
         }
 
 
-    
+
 
         public virtual DbSet<AbtroopDatabase> AbtroopDatabases { get; set; }
 
         public virtual DbSet<AllTimeRank> AllTimeRanks { get; set; }
-      
+
         public virtual DbSet<ArmyBoost> ArmyBoosts { get; set; }
         public virtual DbSet<ArmyIndex> ArmyIndices { get; set; }
 
@@ -37,12 +35,12 @@ namespace DracoStandardSite.Data
         public virtual DbSet<Characteristic> Characteristics { get; set; }
         public virtual DbSet<Comp> Comps { get; set; }
         public virtual DbSet<CompResult> CompResults { get; set; }
-        
+
 
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<PlayerResult> PlayerResults { get; set; }
         public virtual DbSet<QryRanking> QryRankings { get; set; }
-   
+
         public virtual DbSet<Result> Results { get; set; }
         public virtual DbSet<ShootingSkill> ShootingSkills { get; set; }
         public virtual DbSet<TblBattle> TblBattles { get; set; }
@@ -90,7 +88,7 @@ namespace DracoStandardSite.Data
                 entity.ToView("playerArmyStats");
             });
 
-     
+
 
 
             modelBuilder.Entity<AllRankings>(entity =>
@@ -118,33 +116,33 @@ namespace DracoStandardSite.Data
             });
             modelBuilder.Entity<armyBuilderTroops>(entity =>
             {
-           entity.HasKey(e => new { e.ArmyNo, e.Num });
+                entity.HasKey(e => new { e.ArmyNo, e.Num });
 
-            entity.ToTable("armyBuilderTroops");
+                entity.ToTable("armyBuilderTroops");
 
-        entity.Property(e => e.Troop_Type).HasMaxLength(255);
-        entity.Property(e => e.Description).HasMaxLength(255);
-        entity.Property(e => e.Min).HasMaxLength(255);
-        entity.Property(e => e.Max).HasMaxLength(255);
-        entity.Property(e => e.UG_size).HasMaxLength(255);
-        entity.Property(e => e.Type).HasMaxLength(255);
-        entity.Property(e => e.Drill).HasMaxLength(255);
-        entity.Property(e => e.Quality).HasMaxLength(255);
-        entity.Property(e => e.Armour).HasMaxLength(255);
-        entity.Property(e => e.Weapon).HasMaxLength(255);
-        entity.Property(e => e.Shoot_Skill).HasMaxLength(255);
-        entity.Property(e => e.Skill).HasMaxLength(255);
-        entity.Property(e => e.Char1).HasMaxLength(255);
-        entity.Property(e => e.Char2).HasMaxLength(255);
-        entity.Property(e => e.Char3).HasMaxLength(255);
-        entity.Property(e => e.Opt_Char).HasMaxLength(255);
-    }
+                entity.Property(e => e.Troop_Type).HasMaxLength(255);
+                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.Min).HasMaxLength(255);
+                entity.Property(e => e.Max).HasMaxLength(255);
+                entity.Property(e => e.UG_size).HasMaxLength(255);
+                entity.Property(e => e.Type).HasMaxLength(255);
+                entity.Property(e => e.Drill).HasMaxLength(255);
+                entity.Property(e => e.Quality).HasMaxLength(255);
+                entity.Property(e => e.Armour).HasMaxLength(255);
+                entity.Property(e => e.Weapon).HasMaxLength(255);
+                entity.Property(e => e.Shoot_Skill).HasMaxLength(255);
+                entity.Property(e => e.Skill).HasMaxLength(255);
+                entity.Property(e => e.Char1).HasMaxLength(255);
+                entity.Property(e => e.Char2).HasMaxLength(255);
+                entity.Property(e => e.Char3).HasMaxLength(255);
+                entity.Property(e => e.Opt_Char).HasMaxLength(255);
+            }
             );
-                
 
- 
 
-           
+
+
+
 
 
             modelBuilder.Entity<AbtroopDatabase>(entity =>
@@ -205,7 +203,7 @@ namespace DracoStandardSite.Data
                 entity.Property(e => e.TotalPoints).HasColumnName("totalPoints");
             });
 
-          
+
 
             modelBuilder.Entity<ArmyBoost>(entity =>
             {

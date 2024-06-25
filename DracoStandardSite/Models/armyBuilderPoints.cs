@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DracoStandardSite.Models
+﻿namespace DracoStandardSite.Models
 {
     public partial class armyBuilderPoints
     {
@@ -15,6 +12,6 @@ namespace DracoStandardSite.Models
         }
     }
 
-   
+
 }
 

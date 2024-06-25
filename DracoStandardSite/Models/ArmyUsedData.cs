@@ -2,7 +2,7 @@
 
 namespace DracoStandardSite.Models
 {
-    public partial class ArmyUsed
+    public partial class ArmyUsedData
     {
         public int ArmyId { get; set; }
         public string Army { get; set; }

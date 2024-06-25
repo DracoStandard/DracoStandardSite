@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿using DracoStandardSite.Models;
 using Microsoft.EntityFrameworkCore;
-using DracoStandardSite.Models;
-using System.Security.Cryptography;
 
 //https://www.blogofpi.com/crud-using-blazor-and-entity-framework-core/'
 
@@ -67,10 +61,10 @@ namespace DracoStandardSite.Data
         public async Task<List<ArmyRankBoost>> GetArmyRankBoostsByRegion(string region)
         {
             IQueryable<ArmyRankBoost> arb = from a in _context.ArmyRankBoosts select a;
-            arb=arb.Where(s => s.Region == region);
+            arb = arb.Where(s => s.Region == region);
             arb = arb.OrderBy(s => s.Position);
 
-            
+
 
             return await arb.ToListAsync();
         }
@@ -85,7 +79,7 @@ namespace DracoStandardSite.Data
 
         public async Task<List<ArmyRankBoost>> GetArmyRankBoosts()
         {
-            IQueryable<ArmyRankBoost>arb = from a in _context.ArmyRankBoosts select a;
+            IQueryable<ArmyRankBoost> arb = from a in _context.ArmyRankBoosts select a;
             arb = arb.OrderBy(s => s.Position);
             return await arb.ToListAsync();
         }
@@ -94,7 +88,7 @@ namespace DracoStandardSite.Data
         {
 
             IQueryable<AllRankings> rankQuery = from s in _context.AllRankings
-                                              select s;
+                                                select s;
             rankQuery = rankQuery.Where(s => s.gameSystem == system);
             if (topFive) { rankQuery = rankQuery.Take(5); }
 
@@ -153,7 +147,7 @@ namespace DracoStandardSite.Data
 
         public async Task<List<ArmyUsed>> GetAllArmyUseds()
         {
-     
+
             return await _context.ArmyUseds.ToListAsync();
         }
         public async Task<List<ArmyBoost>> GetArmyBoosts()

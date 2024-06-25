@@ -1,17 +1,8 @@
-﻿
-
-
-using DracoStandardSite.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-
-namespace DracoStandardSite.Models
+﻿namespace DracoStandardSite.Models
 {
     public partial class UGdetails
     {
-   
+
         public int? Ugno { get; set; }
         public string? Description { get; set; }
         public string? Formation { get; set; }
@@ -32,11 +23,12 @@ namespace DracoStandardSite.Models
         public UGdetails()
         {
             Characteristics = new List<ugCharacteristic>();
-     
+
         }
 
         public UGdetails(armyBuilderTroops troop)
-        { try
+        {
+            try
             {
                 if (troop == null) { throw new ArgumentNullException(nameof(troop)); }
             }
@@ -55,12 +47,12 @@ namespace DracoStandardSite.Models
             Shooting = new RegradeableChar(troop.Shoot_Skill);
             ShootingWeap = troop.Skill;
             Melee = troop.Weapon;
-            
+
             //default no of bases for TUG
             Bases = 4;
 
             if (troop.Drill.Contains("Skirm"))
-                { Class = "SUG"; }
+            { Class = "SUG"; }
             else { Class = "TUG"; }
 
             List<string> manList = new List<string>();
@@ -84,9 +76,9 @@ namespace DracoStandardSite.Models
                 optList = opt.Split(',').ToList();
                 foreach (string o in optList)
                 {
-              
-                    string oT=o.Trim();
-                  
+
+                    string oT = o.Trim();
+
                     ugCharacteristic c = new ugCharacteristic(oT, "optional");
                     Characteristics.Add(c);
                 }
@@ -96,17 +88,17 @@ namespace DracoStandardSite.Models
 
 
         }
-      
- 
+
+
 
 
     }
     public class RegradeableChar
     {
         public string grade { get; set; }
-        public bool downgraded { get; set; }   
+        public bool downgraded { get; set; }
         private string originalGrade { get; set; }
-        
+
         public RegradeableChar()
         {
             originalGrade = "Average";
@@ -169,11 +161,11 @@ namespace DracoStandardSite.Models
 
             return newGrade;
         }
-        
-        
+
+
 
     }
-    }
+}
 
 
 

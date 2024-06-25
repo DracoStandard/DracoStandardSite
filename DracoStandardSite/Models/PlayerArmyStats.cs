@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-    
+﻿
 namespace DracoStandardSite.Models
 {
     public class PlayerArmyStats
@@ -9,7 +7,7 @@ namespace DracoStandardSite.Models
         public string Name { get; set; }
         public String Army { get; set; }
         public double avgPoints { get; set; }
-        public int timesUsed { get; set; }  
+        public int timesUsed { get; set; }
 
 
     }

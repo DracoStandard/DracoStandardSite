@@ -1,9 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DracoStandardSite.Models
+﻿namespace DracoStandardSite.Models
 {
     public class Camp
     {
@@ -59,7 +54,7 @@ namespace DracoStandardSite.Models
                     multi = 1;
                     break;
             }
-            switch(Type)
+            switch (Type)
             {
                 case "Fortified":
                     addon = 60;
@@ -80,7 +75,7 @@ namespace DracoStandardSite.Models
 
             }
             pts = (pts + addon) * multi;
-            points= (int)pts*3;
+            points = (int)pts * 3;
             return points;
 
         }
@@ -88,5 +83,5 @@ namespace DracoStandardSite.Models
 
 
     }
-    
+
 }
