@@ -8,9 +8,24 @@
 
 @inject IRankingsService service
 
-<RegionChart></RegionChart>
+<div class="container-fluid>">
+    <div class="row">
+        <div class="col">
+            <RegionChart></RegionChart>
+        </div>
+    
+    </div>
+    <div class="row">
+        <div class="col">
+            <ArmyRanks></ArmyRanks>
+        </div>
 
-<ArmyRanks></ArmyRanks>
+    </div>
+    
+
+</div>
+
+
 
 <h3>Army Stats</h3>
 @if (regionList == null)
