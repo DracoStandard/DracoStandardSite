@@ -1,12 +1,10 @@
-﻿@using ApexCharts
+﻿@page "/army-regions"
+@using ApexCharts
 @using System.Linq
 @using System.Collections.Generic
 @using DracoStandardSite.Components
-
-
 @using DracoStandardSite.Data
 @using DracoStandardSite.Models
-
 
 @inject IRankingsService service
 
@@ -17,30 +15,33 @@
     <p><em>Loading...</em></p>
 }
 else
-
-
 {
-<ApexChart TItem="ArmyUsed"
-    Title="Army Use by Book">
-
-    <ApexPointSeries TItem="ArmyUsed"
-        Items="aList"
-        Name="reg"
-        SeriesType="SeriesType.Pie"
-        XValue="@(r=>r.Region)"
-        YAggregate="@(r=>r.Count())"
-    ></ApexPointSeries>
-    </ApexChart>
+    <div style="width: 100%; max-width: 600px; height: 400px; margin: 0 auto;">
+        <ApexChart TItem="ChartData" Title="Army Use by Region">
+            <ApexPointSeries TItem="ChartData"
+                             Items="chartData"
+                             Name="Region"
+                             SeriesType="SeriesType.Pie"
+                             XValue="@(r => r.Region)"
+                             YValue="@(r => r.Count)">
+            </ApexPointSeries>
+        </ApexChart>
+    </div>
 }
 
 @code {
     [Parameter]
     public List<ArmyUsed> aList { get; set; }
 
-    List<ChartData> chartData;
+    private List<ChartData> chartData;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        if (aList == null)
+        {
+            aList = await service.GetAllArmyUseds();
+        }
+
         if (aList != null)
         {
             chartData = aList
@@ -54,10 +55,5 @@ else
     {
         public string Region { get; set; }
         public int Count { get; set; }
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        aList = await service.GetAllArmyUseds();
     }
 }
