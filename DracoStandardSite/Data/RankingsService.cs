@@ -34,6 +34,9 @@ namespace DracoStandardSite.Data
 
         Task<List<ArmyUsed>> GetAllArmyUseds();
 
+        Task<List<ArmyIndex>> GetArmyIndexes();
+
+
     }
 
     public class RankingsService : IRankingsService
@@ -45,6 +48,10 @@ namespace DracoStandardSite.Data
             _context = context;
         }
 
+        public async Task<List<ArmyIndex>> GetArmyIndexes()
+        {
+            return await _context.ArmyIndices.ToListAsync();
+        }
 
         public async Task<List<Comp>> GetRecentComps()
         {
