@@ -1,0 +1,72 @@
+﻿@page "/random-army-book"
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+@inject IRankingsService service
+
+<h3>Random Army Selector By Book</h3>
+
+@if (armies == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <label for="regionSelect">Filter by Region:</label>
+        <select id="regionSelect" @onchange="UpdateSelectedRegions" multiple>
+            @foreach (var region in regions)
+            {
+                <option value="@region">@region</option>
+            }
+        </select>
+
+        <button @onclick="GenerateRandomArmy">Generate Random Army</button>
+
+        @if (randomArmy != null)
+        {
+            <p>Random Army: @randomArmy.Army (@randomArmy.Region)</p>
+        }
+    </div>
+}
+
+@code {
+    private List<ArmyIndex> armies;
+    private List<string> regions;
+    private HashSet<string> selectedRegions = new();
+    private ArmyIndex randomArmy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        armies = await service.GetArmyIndexes();
+        regions = armies.Select(a => a.Region).Distinct().ToList();
+    }
+
+    private void UpdateSelectedRegions(ChangeEventArgs e)
+    {
+        var selectedOptions = (e.Value as IEnumerable<string>) ?? new List<string>();
+
+        selectedRegions.Clear();
+        foreach (var option in selectedOptions)
+        {
+            selectedRegions.Add(option);
+        }
+    }
+
+    private void GenerateRandomArmy()
+    {
+        var filteredArmies = !selectedRegions.Any()
+            ? armies
+            : armies.Where(a => selectedRegions.Contains(a.Region)).ToList();
+
+        if (filteredArmies.Any())
+        {
+            var random = new Random();
+            randomArmy = filteredArmies[random.Next(filteredArmies.Count)];
+        }
+        else
+        {
+            randomArmy = null;
+        }
+    }
+}
+

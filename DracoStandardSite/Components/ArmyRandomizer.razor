@@ -1,0 +1,67 @@
+﻿@page "/random-army"
+@using System.Linq
+
+@using System.Collections.Generic
+@using DracoStandardSite.Components
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService ArmyService
+
+<h3>Random Army Selector</h3>
+
+@if (armies == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <label for="regionSelect">Filter by Region:</label>
+        <select id="regionSelect" @bind="selectedRegion">
+            <option value="">All</option>
+            @foreach (var region in regions)
+            {
+                <option value="@region">@region</option>
+            }
+        </select>
+
+        <button @onclick="GenerateRandomArmy">Generate Random Army</button>
+
+        @if (randomArmy != null)
+        {
+            <p>Random Army: @randomArmy.Army (@randomArmy.Region)</p>
+        }
+    </div>
+}
+
+@code {
+    private List<ArmyIndex> armies;
+    private List<string> regions;
+    private string selectedRegion = "";
+    private ArmyIndex randomArmy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        armies = await ArmyService.GetArmyIndexes();
+        regions = armies.Select(a => a.Region).Distinct().ToList();
+    }
+
+    private void GenerateRandomArmy()
+    {
+        var filteredArmies = string.IsNullOrEmpty(selectedRegion)
+            ? armies
+            : armies.Where(a => a.Region == selectedRegion).ToList();
+
+        if (filteredArmies.Any())
+        {
+            var random = new Random();
+            randomArmy = filteredArmies[random.Next(filteredArmies.Count)];
+        }
+        else
+        {
+            randomArmy = null;
+        }
+    }
+}
