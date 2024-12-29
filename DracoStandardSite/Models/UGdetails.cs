@@ -1,4 +1,6 @@
-﻿namespace DracoStandardSite.Models
+﻿using System.ComponentModel;
+
+namespace DracoStandardSite.Models
 {
     public partial class UGdetails
     {
@@ -93,6 +95,12 @@
 
 
     }
+    
+
+    [TypeConverter(typeof(RegradeableCharConverter))]
+ 
+
+
     public class RegradeableChar
     {
         public string grade { get; set; }
