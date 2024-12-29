@@ -59,6 +59,9 @@ namespace DracoStandardSite.Data
 
         public virtual DbSet<Generals> Generals { get; set; }
 
+        public virtual DbSet<Unit> Units { get; set; }
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -73,6 +76,13 @@ namespace DracoStandardSite.Data
             modelBuilder.HasDefaultSchema("dracostandard")
                 .HasAnnotation("Relational:Collation", "Latin1_General_CI_AS");
 
+
+
+            modelBuilder.Entity<Unit>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToTable("unit_info", "dracostandard");
+            });
 
             modelBuilder.Entity<Generals>(entity =>
             {
