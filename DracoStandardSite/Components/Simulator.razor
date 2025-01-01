@@ -14,153 +14,229 @@
 
 @inject IJSRuntime JS
 
-<h3>MEG Combat Simulation</h3>
+<h1>MEG Combat Simulator</h1>
+<h3>Instructions</h3>
+Chose the characteristics of the two units you want to compare and the number of repetitions of the simulation. The simulation will run and display the results below.
+Notes fls = foot long spear, mme = mounted melee expert and so on...
+you can only input solid blocks (eg 3x2) for the number of files and rows
 
 @if (isDataLoaded)
 {
-    <h2>TUG1</h2>
-    <form>
-          <div class="row">
-            <div class="col-md-6">
-        <div class="form-group">
-            <label for="tug1Type">Type</label>
-            <select id="tug1Type" class="form-control" @bind="tug1Type">
-                @foreach (var option in typeOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
+    <EditForm Model="this" OnValidSubmit="RunSimulation">
+        <h2>TUG A</h2>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Type">Type</label>
+                    <select id="tug1Type" class="form-control" @bind="tug1Type">
+                        <option value="">-- Select Type --</option>
+                        @foreach (var option in typeOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Quality">Quality</label>
+                    <select id="tug1Quality" class="form-control" @bind="tug1Quality">
+                        <option value="">-- Select Quality --</option>
+                        @foreach (var option in qualityOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Protection">Protection</label>
+                    <select id="tug1Protection" class="form-control" @bind="tug1Protection">
+                        <option value="">-- Select Protection --</option>
+                        @foreach (var option in protOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+   
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Melee">Weapon</label>
+                    <select id="tug1Melee" class="form-control" @bind="tug1Melee">
+                        <option value="">-- Select Melee --</option>
+                        @foreach (var option in meleeOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Char1">Char1</label>
+                    <select id="tug1Char1" class="form-control" @bind="tug1Char1">
+                        <option value="">-- Select Char1 --</option>
+                        @foreach (var option in charOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Char2">Char2</label>
+                    <select id="tug1Char2" class="form-control" @bind="tug1Char2">
+                        <option value="">-- Select Char2 --</option>
+                        @foreach (var option in charOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Char3">Char3</label>
+                    <select id="tug1Char3" class="form-control" @bind="tug1Char3">
+                        <option value="">-- Select Char3 --</option>
+                        @foreach (var option in charOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Files">Files</label>
+                    <input type="number" id="tug1Files" class="form-control" @bind="tug1Files" min="1" placeholder="Enter number" />
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug1Rows">Ranks</label>
+                    <input type="number" id="tug1Rows" class="form-control" @bind="tug1Rows" min="1" placeholder="Enter number" />
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="tug1Quality">Quality</label>
-            <select id="tug1Quality" class="form-control" @bind="tug1Quality">
-                @foreach (var option in qualityOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug1Files">Files</label>
-            <input type="number" id="tug1Files" class="form-control" @bind="tug1Files" min="1" />
-        </div>
-        <div class="form-group">
-            <label for="tug1Rows">Rows</label>
-            <input type="number" id="tug1Rows" class="form-control" @bind="tug1Rows" min="1" />
-        </div>
-        <div class="form-group">
-            <label for="tug1Melee">Melee</label>
-            <select id="tug1Melee" class="form-control" @bind="tug1Melee">
-                @foreach (var option in meleeOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug1Char1">Char1</label>
-            <select id="tug1Char1" class="form-control" @bind="tug1Char1">
-                @foreach (var option in charOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug1Char2">Char2</label>
-            <select id="tug1Char2" class="form-control" @bind="tug1Char2">
-                @foreach (var option in charOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug1Char3">Char3</label>
-            <select id="tug1Char3" class="form-control" @bind="tug1Char3">
-                @foreach (var option in charOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-               </div>
-            </div></div>
-             <div class="row">
 
-            <div class="col-md-6">
+        <h2>TUG B</h2>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Type">Type</label>
+                    <select id="tug2Type" class="form-control" @bind="tug2Type">
+                        <option value="">-- Select Type --</option>
+                        @foreach (var option in typeOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Quality">Quality</label>
+                    <select id="tug2Quality" class="form-control" @bind="tug2Quality">
+                        <option value="">-- Select Quality --</option>
+                        @foreach (var option in qualityOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Protection">Protection</label>
+                    <select id="tug2Protection" class="form-control" @bind="tug2Protection">
+                        <option value="">-- Select Protection --</option>
+                        @foreach (var option in protOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+             </div>
+      
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Melee">Weapon</label>
+                    <select id="tug2Melee" class="form-control" @bind="tug2Melee">
+                        <option value="">-- Select Melee --</option>
+                        @foreach (var option in meleeOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Char1">Char1</label>
+                    <select id="tug2Char1" class="form-control" @bind="tug2Char1">
+                        <option value="">-- Select Char1 --</option>
+                        @foreach (var option in charOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Char2">Char2</label>
+                    <select id="tug2Char2" class="form-control" @bind="tug2Char2">
+                        <option value="">-- Select Char2 --</option>
+                        @foreach (var option in charOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Char3">Char3</label>
+                    <select id="tug2Char3" class="form-control" @bind="tug2Char3">
+                        <option value="">-- Select Char3 --</option>
+                        @foreach (var option in charOptions)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Files">Files</label>
+                    <input type="number" id="tug2Files" class="form-control" @bind="tug2Files" min="1" placeholder="Enter number" />
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="tug2Rows">Ranks</label>
+                    <input type="number" id="tug2Rows" class="form-control" @bind="tug2Rows" min="1" placeholder="Enter number" />
+                </div>
+            </div>
+        </div>
+        <p>
 
-        <h2>TUG2</h2>
-        <div class="form-group">
-            <label for="tug2Type">Type</label>
-            <select id="tug2Type" class="form-control" @bind="tug2Type">
-                @foreach (var option in typeOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug2Quality">Quality</label>
-            <select id="tug2Quality" class="form-control" @bind="tug2Quality">
-                @foreach (var option in qualityOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug2Files">Files</label>
-            <input type="number" id="tug2Files" class="form-control" @bind="tug2Files" min="1" />
-        </div>
-        <div class="form-group">
-            <label for="tug2Rows">Rows</label>
-            <input type="number" id="tug2Rows" class="form-control" @bind="tug2Rows" min="1" />
-        </div>
-        <div class="form-group">
-            <label for="tug2Melee">Melee</label>
-            <select id="tug2Melee" class="form-control" @bind="tug2Melee">
-                @foreach (var option in meleeOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug2Char1">Char1</label>
-            <select id="tug2Char1" class="form-control" @bind="tug2Char1">
-                @foreach (var option in charOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug2Char2">Char2</label>
-            <select id="tug2Char2" class="form-control" @bind="tug2Char2">
-                @foreach (var option in charOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tug2Char3">Char3</label>
-            <select id="tug2Char3" class="form-control" @bind="tug2Char3">
-                @foreach (var option in charOptions)
-                {
-                    <option value="@option">@option</option>
-                }
-            </select>
-        </div>
-        </div></div>
-
-
+        </p>
+        <div class="row">
+           
         <div class="form-group">
             <label for="numRepetitions">Number of Repetitions:</label>
             <input type="number" id="numRepetitions" @bind="numRepetitions" min="1" />
         </div>
-        <button @onclick="RunSimulation">Run Simulation</button>
-    </form>
+        <button type="submit" class="btn btn-primary">Run Simulation</button>
+        </div>
+    </EditForm>
 
     @if (results != null)
     {
@@ -169,6 +245,9 @@
         <p>Draws: @results.Draws</p>
         <p>Losses: @results.Losses</p>
     }
+    <h4>Simulation Results:</h4>
+    <p>A Wins: @awin</p>
+    <p>B Wins: @dwin</p>
 }
 else
 {
@@ -176,16 +255,12 @@ else
 }
 
 @code {
-
-
-
     private Ug UGA;
-
     private Ug UGB;
-
 
     private string? tug1Type;
     private string? tug1Quality;
+    private string? tug1Protection;
     private int? tug1Files;
     private int? tug1Rows;
     private string? tug1Melee;
@@ -195,6 +270,7 @@ else
 
     private string? tug2Type;
     private string? tug2Quality;
+    private string? tug2Protection;
     private int? tug2Files;
     private int? tug2Rows;
     private string? tug2Melee;
@@ -207,29 +283,26 @@ else
 
     private int numRepetitions = 1000;
 
-    private List<string> typeOptions = new List<string>();
-    private List<string> qualityOptions = new List<string>();
-    private List<string> meleeOptions = new List<string>();
-    private List<string> charOptions = new List<string>();
+    private List<string> typeOptions = new List<string> { "inf", "cav", "el" };
+    private List<string> qualityOptions = new List<string> { "x", "s", "a", "p" };
+    private List<string> meleeOptions = new List<string> { "fss", "iw", "fls", "pk", "fpa", "cl", "mls", "mpa", "mss" };
+    private List<string> charOptions = new List<string> { "cs", "fme", "mme", "fdc", "mdc", "shv" };
+    private List<string> protOptions = new List<string> { "fa", "p", "u" };
 
     private bool isDataLoaded = false;
 
     private CombatResults results;
 
-
     int outcome;
-
+    int awin;
+    int dwin;
 
     protected override async Task OnInitializedAsync()
     {
-        typeOptions = await service.GetUniqueTypes();
-        qualityOptions = await service.GetUniqueQualities();
-        meleeOptions = await service.GetUniqueMeleeWeaponries();
-        charOptions = await service.GetUniqueMandatoryCharacteristics(); // Assuming Char1, Char2, Char3 are from MandatoryCharacteristics
         isDataLoaded = true;
     }
 
-    private void RunSimulation()
+    private async void RunSimulation()
     {
         // Combine characteristics into lists
         tug1Characteristics = new List<string> { tug1Char1, tug1Char2, tug1Char3 };
@@ -241,13 +314,17 @@ else
         // Create UGB
         UGB = new Ug(tug2Quality, tug2Type, tug2Melee, tug2Characteristics, tug2Rows ?? 1, tug2Files ?? 1);
 
-        outcome = 0;
-        
+        awin = 0;
+        dwin = 0;
+
         for (int i = 0; i < numRepetitions; i++)
         {
-
-           outcome += UGA.combat(UGB);
+            Fight f = new Fight(UGA, UGB);
+            string result = f.battle();
+            if (result == "a") { awin++; }
+            if (result == "d") { dwin++; }
         }
+
     }
 
     private class CombatResults
@@ -256,6 +333,5 @@ else
         public int Draws { get; set; }
         public int Losses { get; set; }
     }
-
-   
 }
+
