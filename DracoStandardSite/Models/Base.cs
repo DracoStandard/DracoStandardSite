@@ -37,12 +37,13 @@ namespace DracoStandardSite.Models
             Quality = other.Quality;
             Protection = other.Protection;
         }
-        public Base(string Qual, string ugType, string mel, List<string> characteristics)
+        public Base(string Qual, string ugType, string mel, string prot, List<string> characteristics)
         {
             Characteristics = characteristics;
             Type = ugType;
             Melee = mel;
             Quality = Qual;
+            Protection = prot;
         }
 
 

@@ -52,8 +52,24 @@ namespace DracoStandardSite.Models
 
             return bases.Peek();
         }
+        public void applyshove()
+        {
+            if (shieldWall()) { shoved = false; }
+            else { shoved =  true; }
+        }
+        public void applyshatter()
+        {
+            if (shieldWall()) { shattered = false; }
+            else { shattered = true; }
+        }
+        public bool shieldWall()
+        {
+            if (this.ranks == 0) {  return false; }
+            else if (this.front().Characteristics.Contains("sw") && this.rankBonus("c", "sw") > 1) { return true; }
+            
+            else { return false; } 
+        }
 
-    
         public bool shove()
         { if (isEmpty()) { return false; }
             else
@@ -413,7 +429,10 @@ namespace DracoStandardSite.Models
             switch (this.front().Protection)
             {
                 case "fa":
-                    bonus += 1;
+                    if (op.front().Melee != "2hc")
+                    {
+                        bonus += 1;
+                    }
                     break;
      
                 case "u":
