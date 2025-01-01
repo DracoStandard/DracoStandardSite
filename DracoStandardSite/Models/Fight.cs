@@ -76,7 +76,14 @@ namespace DracoStandardSite.Models
 
             }
 
-
+            // Fill remaining slots with empty UgFile instances
+            for (int b = 0; b < widest; b++)
+            {
+                if (battlearray[b, 1] == null)
+                {
+                    battlearray[b, 1] = new UgFile();
+                }
+            }
 
 
 
@@ -106,8 +113,14 @@ namespace DracoStandardSite.Models
             attacker.resetFlags();
             defender.resetFlags();
 
+            int round = 0;
+
             while (!attacker.broken && !defender.broken)
-            {
+            {//add a count to break out of loop if it goes on too long
+                round++;
+                if (round > 100) { break; }
+           
+
                 //set overlap flags
                 for (int o= 0; o < widest; o++)
                 { 
@@ -322,13 +335,13 @@ namespace DracoStandardSite.Models
                         t.casualty(f);
                         if (causer.shove() && !(causereffect.Contains("k") || causereffect.Contains("s")))
                         {
-                            f.shoved = true;
-                            t.shoved = true;
+                            f.applyshove();
+                            //t.shoved = true;
                         }
                         if (causer.shatter() && !(causereffect.Contains("k") || causereffect.Contains("s")))
                         {
-                            f.shattered = true;
-                            t.shattered = true;
+                            f.applyshatter();
+                            //t.shattered = true;
                         }
                         break;
                     case 'w':
@@ -344,13 +357,13 @@ namespace DracoStandardSite.Models
                         //make shove do something
                         if (causer.shove() && !(causereffect.Contains("k") || causereffect.Contains("s")))
                         {
-                            f.shoved = true;
-                            t.shoved = true;
+                            f.applyshove();
+                            //t.shoved = true;
                         }
                         if (causer.shatter() && !(causereffect.Contains("k") || causereffect.Contains("s")))
                         {
-                            f.shattered = true;
-                            t.shattered = true;
+                            f.applyshatter();
+                            //t.shattered = true;
                         }
                         break;
                     default:

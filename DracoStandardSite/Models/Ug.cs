@@ -22,7 +22,7 @@ namespace DracoStandardSite.Models
    
         public Ug() { }
 
-        public Ug(string Quality, string ugType, string melee, List<string> characteristics, int ranks, int columns)
+        public Ug(string Quality, string ugType, string melee, string protection,  List<string> characteristics, int ranks, int columns)
         {
             bases = 0;
             Files = new List<UgFile>();
@@ -33,7 +33,7 @@ namespace DracoStandardSite.Models
                 UgFile f = new UgFile();
                 for (int j = 0; j < ranks; j++)
                 {
-                    Base b = new Base(Quality, ugType, melee, characteristics);
+                    Base b = new Base(Quality, ugType, melee,protection, characteristics);
                     f.addBase(b);
                     bases++;
                 }

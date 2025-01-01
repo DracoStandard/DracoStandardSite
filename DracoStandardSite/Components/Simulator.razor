@@ -238,13 +238,6 @@ you can only input solid blocks (eg 3x2) for the number of files and rows
         </div>
     </EditForm>
 
-    @if (results != null)
-    {
-        <h4>Results:</h4>
-        <p>Wins: @results.Wins</p>
-        <p>Draws: @results.Draws</p>
-        <p>Losses: @results.Losses</p>
-    }
     <h4>Simulation Results:</h4>
     <p>A Wins: @awin</p>
     <p>B Wins: @dwin</p>
@@ -281,12 +274,12 @@ else
     private List<string> tug1Characteristics = new List<string>();
     private List<string> tug2Characteristics = new List<string>();
 
-    private int numRepetitions = 1000;
+    private int numRepetitions = 10;
 
     private List<string> typeOptions = new List<string> { "inf", "cav", "el" };
     private List<string> qualityOptions = new List<string> { "x", "s", "a", "p" };
-    private List<string> meleeOptions = new List<string> { "fss", "iw", "fls", "pk", "fpa", "cl", "mls", "mpa", "mss" };
-    private List<string> charOptions = new List<string> { "cs", "fme", "mme", "fdc", "mdc", "shv" };
+    private List<string> meleeOptions = new List<string> { "fss", "iw", "fls", "pk", "fpa", "cl", "mls", "mpa", "mss", "2hc" };
+    private List<string> charOptions = new List<string> { "cs", "fme", "mme", "fdc", "mdc", "shv", "sw" };
     private List<string> protOptions = new List<string> { "fa", "p", "u" };
 
     private bool isDataLoaded = false;
@@ -309,10 +302,10 @@ else
         tug2Characteristics = new List<string> { tug2Char1, tug2Char2, tug2Char3 };
 
         // Create UGA
-        UGA = new Ug(tug1Quality, tug1Type, tug1Melee, tug1Characteristics, tug1Rows ?? 1, tug1Files ?? 1);
+        UGA = new Ug(tug1Quality, tug1Type, tug1Melee,tug1Protection, tug1Characteristics, tug1Rows ?? 1, tug1Files ?? 1);
 
         // Create UGB
-        UGB = new Ug(tug2Quality, tug2Type, tug2Melee, tug2Characteristics, tug2Rows ?? 1, tug2Files ?? 1);
+        UGB = new Ug(tug2Quality, tug2Type, tug2Melee, tug2Protection,  tug2Characteristics, tug2Rows ?? 1, tug2Files ?? 1);
 
         awin = 0;
         dwin = 0;
