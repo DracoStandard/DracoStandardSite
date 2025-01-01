@@ -24,6 +24,19 @@ namespace DracoStandardSite.Models
             Protection = ug.Protection;
             Quality = ug.Quality?.grade ?? string.Empty; // Fix for CS0029 and CS8601
         }
+
+        // Copy constructor
+        public Base(Base other)
+        {
+            Characteristic1 = other.Characteristic1;
+            Characteristic2 = other.Characteristic2;
+            Characteristic3 = other.Characteristic3;
+            Characteristics = new List<string>(other.Characteristics);
+            Type = other.Type;
+            Melee = other.Melee;
+            Quality = other.Quality;
+            Protection = other.Protection;
+        }
         public Base(string Qual, string ugType, string mel, List<string> characteristics)
         {
             Characteristics = characteristics;
