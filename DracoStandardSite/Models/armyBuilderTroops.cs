@@ -2,8 +2,8 @@
 {
     public class armyBuilderTroops
     {
-        public int? ArmyNo { get; set; }
-        public int? Num { get; set; }
+        public int ArmyNo { get; set; }
+        public int Num { get; set; }
         public string Troop_Type { get; set; }
         public string Description { get; set; }
         public string Min { get; set; }

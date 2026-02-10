@@ -1,0 +1,22 @@
+@inject DracoStandardSite.Data.PdfServices PdfServices
+
+@code {
+    private IEnumerable<string> pdfFiles;
+
+    protected override void OnInitialized()
+    {
+        pdfFiles = PdfServices.GetPdfFiles();
+    }
+}
+
+<div>
+    <h5>Available PDFs</h5>
+    <ul>
+        @foreach (var file in pdfFiles)
+        {
+            <li>
+                <a href="@($"files/{file}")" download>@file</a>
+            </li>
+        }
+    </ul>
+</div>

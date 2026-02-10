@@ -1,33 +1,42 @@
+using DracoStandardSite.Models;
+
 public class EffectResolver
 {
-    public void Apply(string effects, UgFile target, UgFile causer, string oppositeEffects)
+    public void Apply(string effects, UgFile f,Ug t ,UgFile causer, string causereffect)
     {
         foreach (char e in effects)
         {
             switch (e)
             {
                 case 'k':
-                    target.parent.casualty(target);
+                    t.casualty(f);
 
-                    if (!oppositeEffects.Contains('k') && !oppositeEffects.Contains('s'))
+                    if (!causer.shove())
                     {
-                        if (causer.shove()) target.applyshove();
-                        if (causer.shatter()) target.applyshatter();
+                        if (causer.shoved) f.applyshove();
+                        if (causer.shattered) f.applyshatter();
                     }
                     break;
 
                 case 'w':
-                    if (target.parent.wounded) 
-                        target.parent.casualty(target);
-                    else 
-                        target.parent.wounded = true;
+                    if (t.wounded)
+                    {
+                        t.casualty(f);
+                        t.wounded = false;
+                    }
+                    else
+                        t.wounded = true;
                     break;
 
                 case 's':
-                    if (!oppositeEffects.Contains('k') && !oppositeEffects.Contains('s'))
+                    if (causer.shatter())
                     {
-                        if (causer.shove()) target.applyshove();
-                        if (causer.shatter()) target.applyshatter();
+                        
+                        if (causer.shattered) f.applyshatter();
+                    }
+                    if (causer.shove())
+                        {
+                        if (causer.shoved) f.applyshove();
                     }
                     break;
             }

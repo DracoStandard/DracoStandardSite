@@ -1,3 +1,5 @@
+using DracoStandardSite.Models;
+
 public static class BattleLineBuilder
 {
     public static BattleLine[] AlignUnits(Ug attacker, Ug defender)
