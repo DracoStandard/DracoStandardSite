@@ -271,22 +271,19 @@ else
     private string? tug2Char2;
     private string? tug2Char3;
 
-    private List<string> tug1Characteristics = new List<string>();
-    private List<string> tug2Characteristics = new List<string>();
+    private List<string> tug1Characteristics = new();
+    private List<string> tug2Characteristics = new();
 
     private int numRepetitions = 10;
 
-    private List<string> typeOptions = new List<string> { "inf", "cav", "el" };
-    private List<string> qualityOptions = new List<string> { "x", "s", "a", "p" };
-    private List<string> meleeOptions = new List<string> { "fss", "iw", "fls", "pk", "fpa", "cl", "mls", "mpa", "mss", "2hc" };
-    private List<string> charOptions = new List<string> { "cs", "fme", "mme", "fdc", "mdc", "shv", "sw" };
-    private List<string> protOptions = new List<string> { "fa", "p", "u" };
+    private List<string> typeOptions = new() { "inf", "cav", "el" };
+    private List<string> qualityOptions = new() { "x", "s", "a", "p" };
+    private List<string> meleeOptions = new() { "fss", "iw", "fls", "pk", "fpa", "cl", "mls", "mpa", "mss", "2hc" };
+    private List<string> charOptions = new() { "cs", "fme", "mme", "fdc", "mdc", "shv", "sw" };
+    private List<string> protOptions = new() { "fa", "p", "u" };
 
     private bool isDataLoaded = false;
 
-    private CombatResults results;
-
-    int outcome;
     int awin;
     int dwin;
 
@@ -297,34 +294,34 @@ else
 
     private async void RunSimulation()
     {
-        // Combine characteristics into lists
-        tug1Characteristics = new List<string> { tug1Char1, tug1Char2, tug1Char3 };
-        tug2Characteristics = new List<string> { tug2Char1, tug2Char2, tug2Char3 };
+        // Collect characteristics
+        tug1Characteristics = new List<string> { tug1Char1, tug1Char2, tug1Char3 }
+            .Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-        // Create UGA
-        UGA = new Ug(tug1Quality, tug1Type, tug1Melee,tug1Protection, tug1Characteristics, tug1Rows ?? 1, tug1Files ?? 1);
+        tug2Characteristics = new List<string> { tug2Char1, tug2Char2, tug2Char3 }
+            .Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-        // Create UGB
-        UGB = new Ug(tug2Quality, tug2Type, tug2Melee, tug2Protection,  tug2Characteristics, tug2Rows ?? 1, tug2Files ?? 1);
+        // Construct UGs
+        UGA = new Ug(tug1Quality, tug1Type, tug1Melee, tug1Protection, tug1Characteristics,
+                     tug1Rows ?? 1, tug1Files ?? 1);
 
+        UGB = new Ug(tug2Quality, tug2Type, tug2Melee, tug2Protection, tug2Characteristics,
+                     tug2Rows ?? 1, tug2Files ?? 1);
+
+        // Reset results
         awin = 0;
         dwin = 0;
 
+        // --- Run Updated Battle Engine ---
         for (int i = 0; i < numRepetitions; i++)
         {
-            Fight f = new Fight(UGA, UGB);
-            string result = f.battle();
-            if (result == "a") { awin++; }
-            if (result == "d") { dwin++; }
+            var engine = new BattleEngine(UGA, UGB);
+            string result = engine.RunBattle();
+
+            if (result == "a") awin++;
+            if (result == "d") dwin++;
         }
 
-    }
-
-    private class CombatResults
-    {
-        public int Wins { get; set; }
-        public int Draws { get; set; }
-        public int Losses { get; set; }
+        StateHasChanged();
     }
 }
-
