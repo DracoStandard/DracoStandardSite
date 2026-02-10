@@ -53,7 +53,31 @@ namespace DracoStandardSite.Data
             IQueryable<armyBuilderTroops> ugs = from u in _context.ArmyBuilderTroops
                                                 select u;
             ugs = ugs.Where(u => u.ArmyNo == AID);
-            return await ugs.ToListAsync();
+
+            var result = await ugs.ToListAsync();
+
+            // Handle null values
+            foreach (var ug in result)
+            {
+                ug.Troop_Type = ug.Troop_Type ?? string.Empty;
+                ug.Description = ug.Description ?? string.Empty;
+                ug.Min = ug.Min ?? string.Empty;
+                ug.Max = ug.Max ?? string.Empty;
+                ug.UG_size = ug.UG_size ?? string.Empty;
+                ug.Type = ug.Type ?? string.Empty;
+                ug.Drill = ug.Drill ?? string.Empty;
+                ug.Quality = ug.Quality ?? string.Empty;
+                ug.Armour = ug.Armour ?? string.Empty;
+                ug.Weapon = ug.Weapon ?? string.Empty;
+                ug.Shoot_Skill = ug.Shoot_Skill ?? string.Empty;
+                ug.Skill = ug.Skill ?? string.Empty;
+                ug.Char1 = ug.Char1 ?? string.Empty;
+                ug.Char2 = ug.Char2 ?? string.Empty;
+                ug.Char3 = ug.Char3 ?? string.Empty;
+                ug.Opt_Char = ug.Opt_Char ?? string.Empty;
+            }
+
+            return result;
         }
 
         public async Task<IEnumerable<ArmyIndex>> GetArmies()

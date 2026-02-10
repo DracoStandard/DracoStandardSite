@@ -1,3 +1,5 @@
+using DracoStandardSite.Models;
+
 public class BattleLine
 {
     public UgFile Attacker { get; }

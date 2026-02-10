@@ -1,3 +1,6 @@
+using DracoStandardSite.Models;
+using System.Text;
+
 public class DicePool
 {
     private static readonly char[,] EffectMatrix =
@@ -14,7 +17,16 @@ public class DicePool
 
     public List<int> FromBonus(int bonus)
     {
-        return DiceTables.FromBonus(bonus);
+        return bonus switch
+        {
+            -3 => new() { 0 },
+            -2 => new() { 1 },
+            -1 => new() { 2 },
+            0 => new() { 3 },
+            1 => new() { 4 },
+            2 => new() { 4, 4 },
+            _ => new() { 4 }
+        };
     }
 
     public void ApplyShoveShatter(UgFile f, List<int> dice)
@@ -23,22 +35,22 @@ public class DicePool
         if (f.shattered) dice.AddRange(FromBonus(2));
     }
 
-public void AddOverlapDice(IEnumerable<UgFile> overlaps, List<int> dice, UgFile target)
-{
-    foreach (var file in overlaps)
+    public void AddOverlapDice(IEnumerable<UgFile> overlaps, List<int> dice, UgFile target)
     {
-        int b = file.bonus(target, true);
+        foreach (var file in overlaps)
+        {
+            int b = file.bonus(target, true);
 
-        // If target is NOT exempt, downgrade by 1
-        if (!Rules.IsOverlapDowngradeExempt(target))
-            b -= 1;
+            // If target is NOT exempt, downgrade by 1
+            if (!Rules.IsOverlapDowngradeExempt(target))
+                b -= 1;
 
-        // Safety clamp: do not allow impossible die columns
-        if (b < -3) b = -3;
+            // Safety clamp: do not allow impossible die columns
+            if (b < -3) b = -3;
 
-        dice.AddRange(FromBonus(b));
+            dice.AddRange(FromBonus(b));
+        }
     }
-}
 
     public string Roll(List<int> diceList)
     {
@@ -58,9 +70,11 @@ public static class Rules
 {
     public static bool IsOverlapDowngradeExempt(UgFile target)
     {
-        // Get melee code (may be in Ug or UgFile depending on your structure)
-        string melee = target.parent?.melee ?? target.melee;
-        melee = (melee ?? "").Trim().ToLowerInvariant();
+        // Use the front/base of the file for melee and characteristics.
+        // Guard for empty files.
+        Base? frontBase = target.isEmpty() ? null : target.front();
+
+        string melee = (frontBase?.Melee ?? "").Trim().ToLowerInvariant();
 
         // Long Spear or Pike?
         bool isLspOrPk =
@@ -68,12 +82,8 @@ public static class Rules
             melee == "pk"  || melee == "pike";
 
         // Has Keil?
-        bool hasKeil =
-            (target.parent?.characteristics?.Contains("keil",
-                StringComparer.OrdinalIgnoreCase) ?? false)
-            ||
-            (target.characteristics?.Contains("keil",
-                StringComparer.OrdinalIgnoreCase) ?? false);
+        bool hasKeil = frontBase?.Characteristics?.Contains("keil",
+                StringComparer.OrdinalIgnoreCase) ?? false;
 
         // Exempt from overlap downgrade if LSP/Pk AND NOT Keil
         return isLspOrPk && !hasKeil;

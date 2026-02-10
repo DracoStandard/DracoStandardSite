@@ -28,6 +28,7 @@ builder.Services.AddTransient<IRankingsService, RankingsService>();
 
 builder.Services.AddBlazorTable();
 
+builder.Services.AddSingleton<PdfServices>();
 
 var app = builder.Build();
 

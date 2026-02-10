@@ -159,7 +159,7 @@ namespace DracoStandardSite.Data
             {
                 entity.HasKey(e => new { e.ArmyNo, e.LineNumber });
 
-                entity.ToTable("ABTroopDatabase", "dbo");
+                entity.ToTable("ABTroopDatabase");
 
                 entity.Property(e => e.Description).HasMaxLength(255);
 
