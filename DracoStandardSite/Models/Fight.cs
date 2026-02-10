@@ -139,42 +139,29 @@ namespace DracoStandardSite.Models
 
                 for (int f = 0; f < widest; f++)
                 {
-     
                 List<UgFile> Aoverlaps = new List<UgFile>();
                 List<UgFile> Doverlaps = new List<UgFile>();
-
-
-
-
-                    if (!battlearray[f, attArray].isEmpty() && !battlearray[f, defArray].isEmpty())
-                    {
-
-           
-                        //check for overalaps
-                        if (f>0 && battlearray[f-1, attArray].overlap)
-                        {
-
-                            Aoverlaps.Add(battlearray[f-1,attArray]);
-
-                        }
-                        if (f > widest && battlearray[f + 1, attArray].overlap)
-                        {
-
-                            Aoverlaps.Add(battlearray[f + 1, attArray]);
-
-                        }
-                        if (f > 0 && battlearray[f - 1, defArray].overlap)
-                        {
-
-                            Doverlaps.Add(battlearray[f - 1, defArray]); 
-
-                        }
-                        if (f > widest && battlearray[f + 1, defArray].overlap)
-                        {
-
-                            Doverlaps.Add(battlearray[f + 1, defArray]);
-
-                        }
+                
+                // Check left overlap
+                if (f > 0)
+                {
+                    if (battlearray[f - 1, attArray].overlap)
+                        Aoverlaps.Add(battlearray[f - 1, attArray]);
+                
+                    if (battlearray[f - 1, defArray].overlap)
+                        Doverlaps.Add(battlearray[f - 1, defArray]);
+                }
+                
+                // Check right overlap
+                if (f < widest - 1)
+                {
+                    if (battlearray[f + 1, attArray].overlap)
+                        Aoverlaps.Add(battlearray[f + 1, attArray]);
+                
+                    if (battlearray[f + 1, defArray].overlap)
+                        Doverlaps.Add(battlearray[f + 1, defArray]);
+                }
+              
 
 
                         int testa = battlearray[f, attArray].bases.Count;
@@ -273,7 +260,7 @@ namespace DracoStandardSite.Models
                 List<int> DefOverB = new List<int>();
                 foreach (UgFile f in DefOvers)
                 {
-                    AttOverB.Add(f.bonus(attacker, true));
+                    DefOverB.Add(f.bonus(attacker, true));
                 }
 
 
