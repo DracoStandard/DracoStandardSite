@@ -23,14 +23,17 @@ public class DicePool
         if (f.shattered) dice.AddRange(FromBonus(2));
     }
 
-    public void AddOverlapDice(IEnumerable<UgFile> overlaps, List<int> dice, UgFile target)
+public void AddOverlapDice(IEnumerable<UgFile> overlaps, List<int> dice, UgFile target)
+{
+    foreach (var file in overlaps)
     {
-        foreach (var file in overlaps)
-        {
-            int b = file.bonus(target, true) - 1;
-            dice.AddRange(FromBonus(b));
-        }
+        int b = file.bonus(target, true);
+        if (!Rules.IsOverlapDowngradeExempt(target))
+            b -= 1;
+
+        dice.AddRange(FromBonus(b));
     }
+}
 
     public string Roll(List<int> diceList)
     {
@@ -43,5 +46,21 @@ public class DicePool
         }
 
         return result.ToString();
+    }
+}
+
+public static class Rules
+{
+    public static bool IsOverlapDowngradeExempt(UgFile target)
+    {
+        string melee = target.parent?.melee ?? target.melee;
+        melee = (melee ?? "").Trim().ToLowerInvariant();
+
+        bool isLspOrPk = melee == "fls" || melee == "pk" || melee == "fls" || melee == "pike";
+        bool hasKeil =
+            (target.parent?.characteristics?.Contains("keil", StringComparer.OrdinalIgnoreCase) ?? false)
+            || (target.characteristics?.Contains("keil", StringComparer.OrdinalIgnoreCase) ?? false);
+
+        return isLspOrPk && !hasKeil;
     }
 }
