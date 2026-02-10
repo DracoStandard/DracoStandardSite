@@ -203,13 +203,20 @@ namespace DracoStandardSite.Models
             int DefB = defender.bonus(attacker,false);
             // overlaps and shoves and shatters
 
-            if (aTUG.shattered) { DefB = DefB + 2; aTUG.shattered = false; }
-            if (dTUG.shattered) { AttB = AttB + 2; dTUG.shattered = false; }
+            //if (aTUG.shattered) { DefB = DefB + 2; aTUG.shattered = false; }
+            //if (dTUG.shattered) { AttB = AttB + 2; dTUG.shattered = false; }
 
-            if (aTUG.shoved) { DefB = DefB + 1; aTUG.shoved = false; }
-            if (dTUG.shoved) { AttB = AttB + 1; dTUG.shoved = false; }
+            //if (aTUG.shoved) { DefB = DefB + 1; aTUG.shoved = false; }
+            //if (dTUG.shoved) { AttB = AttB + 1; dTUG.shoved = false; }
 
    
+            // --- SHOVE & SHATTER: ADD EXTRA DICE INSTEAD OF BONUS MODIFIERS ---
+            if (aTUG.shoved) { AttD.AddRange(dice(1)); aTUG.shoved = false; }
+            if (dTUG.shoved) { DefD.AddRange(dice(1)); dTUG.shoved = false; }
+            
+            if (aTUG.shattered()) { AttD.AddRange(dice(2)); aTUG.shattered = false}
+            if (dTUG.shattered()) { DefD.AddRange(dice(2)); dTUG.shattered=false}
+
 
             //other impact bonuses
 
@@ -270,8 +277,19 @@ namespace DracoStandardSite.Models
                 }
 
 
-                if (aTUG.shoved) { DefB = DefB + 1; aTUG.shoved = false; }
-                if (dTUG.shoved) { AttB = AttB + 1; dTUG.shoved = false; }
+                 //if (aTUG.shattered) { DefB = DefB + 2; aTUG.shattered = false; }
+            //if (dTUG.shattered) { AttB = AttB + 2; dTUG.shattered = false; }
+
+            //if (aTUG.shoved) { DefB = DefB + 1; aTUG.shoved = false; }
+            //if (dTUG.shoved) { AttB = AttB + 1; dTUG.shoved = false; }
+
+   
+            // --- SHOVE & SHATTER: ADD EXTRA DICE INSTEAD OF BONUS MODIFIERS ---
+            if (aTUG.shoved) { AttD.AddRange(dice(1)); aTUG.shoved = false; }
+            if (dTUG.shoved) { DefD.AddRange(dice(1)); dTUG.shoved = false; }
+            
+            if (aTUG.shattered()) { AttD.AddRange(dice(2)); aTUG.shattered = false}
+            if (dTUG.shattered()) { DefD.AddRange(dice(2)); dTUG.shattered=false}
 
                 //normalise bonuses
                 if (AttB > DefB)
@@ -336,11 +354,13 @@ namespace DracoStandardSite.Models
                         if (causer.shove() && !(causereffect.Contains("k") || causereffect.Contains("s")))
                         {
                             f.applyshove();
+                            causer.shovedThisStep = true;   // prevent cascading shoves
                             //t.shoved = true;
                         }
                         if (causer.shatter() && !(causereffect.Contains("k") || causereffect.Contains("s")))
                         {
                             f.applyshatter();
+                            causer.shatteredThisStep = true;   // prevent cascading shatters
                             //t.shattered = true;
                         }
                         break;
