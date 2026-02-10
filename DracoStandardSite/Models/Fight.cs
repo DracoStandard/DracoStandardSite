@@ -211,11 +211,11 @@ namespace DracoStandardSite.Models
 
    
             // --- SHOVE & SHATTER: ADD EXTRA DICE INSTEAD OF BONUS MODIFIERS ---
-            if (aTUG.shoved) { AttD.AddRange(dice(1)); aTUG.shoved = false; }
-            if (dTUG.shoved) { DefD.AddRange(dice(1)); dTUG.shoved = false; }
+            if (aTUG.shoved) { AttD.AddRange(dice(1));  }
+            if (dTUG.shoved) { DefD.AddRange(dice(1)); }
             
-            if (aTUG.shattered()) { AttD.AddRange(dice(2)); aTUG.shattered = false}
-            if (dTUG.shattered()) { DefD.AddRange(dice(2)); dTUG.shattered=false}
+            if (aTUG.shattered()) { AttD.AddRange(dice(2));}
+            if (dTUG.shattered()) { DefD.AddRange(dice(2)); }
 
 
             //other impact bonuses
@@ -285,11 +285,11 @@ namespace DracoStandardSite.Models
 
    
             // --- SHOVE & SHATTER: ADD EXTRA DICE INSTEAD OF BONUS MODIFIERS ---
-            if (aTUG.shoved) { AttD.AddRange(dice(1)); aTUG.shoved = false; }
-            if (dTUG.shoved) { DefD.AddRange(dice(1)); dTUG.shoved = false; }
+            if (aTUG.shoved) { AttD.AddRange(dice(1));  }
+            if (dTUG.shoved) { DefD.AddRange(dice(1));  }
             
-            if (aTUG.shattered()) { AttD.AddRange(dice(2)); aTUG.shattered = false}
-            if (dTUG.shattered()) { DefD.AddRange(dice(2)); dTUG.shattered=false}
+            if (aTUG.shattered()) { AttD.AddRange(dice(2));}
+            if (dTUG.shattered()) { DefD.AddRange(dice(2));}
 
                 //normalise bonuses
                 if (AttB > DefB)
@@ -354,13 +354,13 @@ namespace DracoStandardSite.Models
                         if (causer.shove() && !(causereffect.Contains("k") || causereffect.Contains("s")))
                         {
                             f.applyshove();
-                            causer.shovedThisStep = true;   // prevent cascading shoves
+                            causer.shoved = true;   // prevent cascading shoves
                             //t.shoved = true;
                         }
                         if (causer.shatter() && !(causereffect.Contains("k") || causereffect.Contains("s")))
                         {
                             f.applyshatter();
-                            causer.shatteredThisStep = true;   // prevent cascading shatters
+                            causer.shattered = true;   // prevent cascading shatters
                             //t.shattered = true;
                         }
                         break;
