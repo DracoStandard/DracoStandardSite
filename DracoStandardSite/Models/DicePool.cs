@@ -28,8 +28,13 @@ public void AddOverlapDice(IEnumerable<UgFile> overlaps, List<int> dice, UgFile 
     foreach (var file in overlaps)
     {
         int b = file.bonus(target, true);
+
+        // If target is NOT exempt, downgrade by 1
         if (!Rules.IsOverlapDowngradeExempt(target))
             b -= 1;
+
+        // Safety clamp: do not allow impossible die columns
+        if (b < -3) b = -3;
 
         dice.AddRange(FromBonus(b));
     }
@@ -53,14 +58,24 @@ public static class Rules
 {
     public static bool IsOverlapDowngradeExempt(UgFile target)
     {
+        // Get melee code (may be in Ug or UgFile depending on your structure)
         string melee = target.parent?.melee ?? target.melee;
         melee = (melee ?? "").Trim().ToLowerInvariant();
 
-        bool isLspOrPk = melee == "fls" || melee == "pk" || melee == "fls" || melee == "pike";
-        bool hasKeil =
-            (target.parent?.characteristics?.Contains("keil", StringComparer.OrdinalIgnoreCase) ?? false)
-            || (target.characteristics?.Contains("keil", StringComparer.OrdinalIgnoreCase) ?? false);
+        // Long Spear or Pike?
+        bool isLspOrPk =
+            melee == "fls" || melee == "lsp" ||
+            melee == "pk"  || melee == "pike";
 
+        // Has Keil?
+        bool hasKeil =
+            (target.parent?.characteristics?.Contains("keil",
+                StringComparer.OrdinalIgnoreCase) ?? false)
+            ||
+            (target.characteristics?.Contains("keil",
+                StringComparer.OrdinalIgnoreCase) ?? false);
+
+        // Exempt from overlap downgrade if LSP/Pk AND NOT Keil
         return isLspOrPk && !hasKeil;
     }
 }
