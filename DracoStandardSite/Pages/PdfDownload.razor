@@ -1,0 +1,28 @@
+@page "/pdf-download"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@code {
+    private List<string> pdfFiles = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        pdfFiles = await Http.GetFromJsonAsync<List<string>>("api/PdfFiles");
+    }
+
+    private string GetPdfUrl(string fileName)
+    {
+        return NavigationManager.BaseUri + $"pdfs/{fileName}";
+    }
+}
+
+<h3>Download PDFs</h3>
+<ul>
+    @foreach (var pdf in pdfFiles)
+    {
+        <li>
+            @pdf
+            [<a href="@GetPdfUrl(pdf)" download>Download</a>]
+        </li>
+    }
+</ul>
