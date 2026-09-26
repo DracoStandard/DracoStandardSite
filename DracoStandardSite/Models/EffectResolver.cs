@@ -42,4 +42,9 @@ public class EffectResolver
             }
         }
     }
+
+    internal void Apply(string defEffects, UgFile attacker, UgFile defender, string attEffects)
+    {
+        throw new NotImplementedException();
+    }
 }

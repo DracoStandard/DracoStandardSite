@@ -4,7 +4,6 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-DracoStandardSite-899486DE-20B0-4890-847F-E39C66B2E5E1</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +22,12 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     
     
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\BatailleEmpire\" />
+    <Folder Include="Models\BatailleEmpire\" />
+    <Folder Include="Pages\BatailleEmpire\" />
   </ItemGroup>
 
 </Project>
