@@ -42,12 +42,12 @@ jobs:
           -p:ContainerRepository=${{ env.IMAGE_REPO }}
           -p:ContainerImageTag=${{ github.sha }}
 
-      - name: Log in to Azure
+      -       - name: Log in to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: a2bd0355-cf19-48e1-91e7-dbe41cea1477
+          tenant-id: e3547f12-7b01-4ca7-b7f8-53443f623310
+          subscription-id: 2c392e8b-84fd-4660-a8e5-ea621b37142a
 
       - name: Deploy new image to Container App
         run: >
