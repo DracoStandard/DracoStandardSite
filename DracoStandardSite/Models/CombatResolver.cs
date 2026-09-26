@@ -49,3 +49,11 @@ public class CombatResolver
         effects.Apply(defEffects, line.Attacker, line.Defender, attEffects);
     }
 }
+
+internal class BonusNormalizer
+{
+    internal static (int attBonus, int defBonus) Normalize(int attBonus, int defBonus)
+    {
+        throw new NotImplementedException();
+    }
+}
