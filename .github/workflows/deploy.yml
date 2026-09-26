@@ -1,20 +1,19 @@
-# Save as .github/workflows/deploy.yml in your repo
 name: Build and deploy to Azure Container Apps
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
 
 permissions:
-  id-***REMOVED***: write      # for Azure OIDC login
+  id-***REMOVED***: write
   contents: read
-  packages: write      # to push to GitHub Container Registry
+  packages: write
 
 env:
-  PROJECT_PATH: DracoStandardSite/DracoStandardSite.csproj   # <-- check this path
+  PROJECT_PATH: DracoStandardSite/DracoStandardSite.csproj
   IMAGE_NAME: draco-web-site
-  CONTAINER_APP: draco-web-site                             # <-- your container app name
+  CONTAINER_APP: draco-web-site
   RESOURCE_GROUP: DracoStandard
 
 jobs:
@@ -26,7 +25,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'   # match your TargetFramework (8.0.x if still on net8.0)
+          dotnet-version: '10.0.x'
 
       - name: Set lowercase image path
         run: echo "IMAGE_REPO=${GITHUB_REPOSITORY_OWNER,,}/${IMAGE_NAME}" >> $GITHUB_ENV
@@ -42,11 +41,11 @@ jobs:
           -p:ContainerRepository=${{ env.IMAGE_REPO }}
           -p:ContainerImageTag=${{ github.sha }}
 
-      -       - name: Log in to Azure
+      - name: Log in to Azure
         uses: azure/login@v2
         with:
           client-id: a2bd0355-cf19-48e1-91e7-dbe41cea1477
-          tenant-id: e3547f12-7b01-4ca7-b7f8-53443f623310
+          tenant-id: YOUR-TENANT-ID
           subscription-id: 2c392e8b-84fd-4660-a8e5-ea621b37142a
 
       - name: Deploy new image to Container App
