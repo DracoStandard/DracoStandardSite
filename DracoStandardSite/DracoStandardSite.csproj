@@ -27,7 +27,6 @@
   <ItemGroup>
     <Folder Include="Components\BatailleEmpire\" />
     <Folder Include="Models\BatailleEmpire\" />
-    <Folder Include="Pages\BatailleEmpire\" />
   </ItemGroup>
 
 </Project>
