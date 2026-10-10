@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-***REMOVED***: write
+  id-token: write
   contents: read
   packages: write
 
