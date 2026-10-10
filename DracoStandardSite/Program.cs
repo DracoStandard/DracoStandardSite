@@ -32,6 +32,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddTransient<IArmyBuilderService, ArmyBuilderService>();
 builder.Services.AddTransient<IRankingsService, RankingsService>();
 
+builder.Services.AddMemoryCache();
 
 builder.Services.AddBlazorTable();
 
