@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
+  id-***REMOVED***: write
   contents: read
   packages: write
 
@@ -31,7 +31,7 @@ jobs:
         run: echo "IMAGE_REPO=${GITHUB_REPOSITORY_OWNER,,}/${IMAGE_NAME}" >> $GITHUB_ENV
 
       - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --***REMOVED***-stdin
 
       - name: Build and push container image
         run: >
