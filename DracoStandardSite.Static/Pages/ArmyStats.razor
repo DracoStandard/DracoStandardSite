@@ -1,0 +1,72 @@
+@page "/ArmyStats"
+@using DracoStandardSite.Components
+
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <RegionChart></RegionChart>
+        </div>
+    
+    </div>
+    <div class="row">
+        <div class="col">
+            <ArmyRanks></ArmyRanks>
+        </div>
+
+    </div>
+    
+
+</div>
+
+
+
+<h3>Army Stats</h3>
+@if (regionList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+
+{
+<select class="form-select form-select-sm" aria-label=".form-select-sm quality" @bind="region" @bind:event="oninput" @onchange="changedRegion">
+   @foreach (string region in regionList)
+   {
+    <option value="@region">@region</option>
+   }
+</select>
+
+<ArmyStatsByRegion region="@region"></ArmyStatsByRegion>
+}
+@code {
+
+
+
+    List<ArmyRankBoost> aList;
+    string region;
+    List<string> regionList;
+
+    private void changedRegion(ChangeEventArgs e)
+    {
+        region = e.Value.ToString();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        region = "Chariot - Sumer and Akkad";
+
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+
+
+        regionList = await service.getUniqueRegions();
+    }
+}

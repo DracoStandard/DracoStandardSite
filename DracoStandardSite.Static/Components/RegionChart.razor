@@ -1,0 +1,87 @@
+﻿@page "/army-regions"
+@using ApexCharts
+@using System.Linq
+@using System.Collections.Generic
+@using DracoStandardSite.Components
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+@inject IRankingsService service
+
+<h3>Army Use by Book</h3>
+
+@if (aList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div style="width: 100%; max-width: 600px; height: 400px; margin: 0 auto;">
+        <ApexChart TItem="ArmyUsed" Title="Army Use by Region" OnDataPointSelection = "HandlePointClick" @ref=chart>
+
+            <ApexPointSeries TItem="ArmyUsed"
+                             Items="aList"
+                             Name="Region"
+                             SeriesType="SeriesType.Pie"
+                             XValue="@(r => r.Region)"
+                             YAggregate="@(r => r.Count())"
+                             >
+                
+            </ApexPointSeries>
+        </ApexChart>
+    </div>
+}
+@if (subChartData != null)
+{
+    <h3>Army use breakdown</h3>
+    <div style="width: 100%; max-width: 600px; height: 400px; margin: 0 auto;">
+        <ApexChart TItem="ArmyUsed" Title="Army Uses" @ref=detailsChart>
+            <ApexPointSeries TItem="ArmyUsed"
+                             Items="subChartData.DataPoint.Items"
+                             Name="Army"
+                             SeriesType="SeriesType.Pie"
+                             XValue="@(r => r.Army)"
+                             YAggregate="@(r => r.Count())">
+            </ApexPointSeries>
+        </ApexChart>
+    </div>
+}
+@code {
+    [Parameter]
+    public List<ArmyUsed> aList { get; set; }
+
+
+    private SelectedData<ArmyUsed> subChartData;
+
+
+    private string selectedRegion;
+
+    private ApexChart<ArmyUsed> chart;
+    private ApexChart<ArmyUsed> detailsChart;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        aList = await service.GetAllArmyUseds();
+
+    }
+
+    private void HandlePointClick(SelectedData<ArmyUsed> region)
+    {
+        if(!region.IsSelected)
+        {
+            subChartData = null;
+            return;
+        }
+        subChartData = region;
+   
+
+        detailsChart?.RenderAsync();
+    }
+
+    public class ChartData
+    {
+        public string Region { get; set; }
+        public int Count { get; set; }
+    }
+}

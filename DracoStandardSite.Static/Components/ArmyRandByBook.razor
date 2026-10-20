@@ -1,0 +1,90 @@
+﻿@page "/random-army-book"
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+@inject IRankingsService service
+
+<h3>Random Army Selector By Book</h3>
+
+@if (armies == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <label for="regionSelect">Filter by Region:</label>
+        <select id="regionSelect" @onchange="UpdateSelectedRegions" multiple>
+            @foreach (var region in regions)
+            {
+                <option value="@region">@region</option>
+            }
+        </select>
+        <div>
+            <input type="checkbox" @bind="filterZeroUsed" />
+            <label for="filterZeroUsed"> Only show armies with 0 uses</label>
+        </div>
+        <button @onclick="GenerateRandomArmy">Generate Random Army</button>
+
+        @if (randomArmy != null)
+        {
+            <p>Random Army: @randomArmy.Army (@randomArmy.Region)</p>
+        }
+    </div>
+}
+
+@code {
+    private List<ArmyIndex> armies;
+    private List<string> regions;
+    private HashSet<string> selectedRegions = new();
+    private ArmyIndex randomArmy;
+    private bool filterZeroUsed = false;
+
+    private List<ArmyUsed> armyUsedData;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        armies = await service.GetArmyIndexes();
+        regions = armies.Select(a => a.Region).Distinct().ToList();
+        armyUsedData = await service.GetAllArmyUseds();
+    }
+
+    private void UpdateSelectedRegions(ChangeEventArgs e)
+    {
+        var selectedOptions = (e.Value as IEnumerable<string>) ?? new List<string>();
+
+        selectedRegions.Clear();
+        foreach (var option in selectedOptions)
+        {
+            selectedRegions.Add(option);
+        }
+    }
+
+    private void GenerateRandomArmy()
+    {
+   var filteredArmies = armies.AsEnumerable();
+
+        if (selectedRegions.Any())
+        {
+            filteredArmies = filteredArmies.Where(a => selectedRegions.Contains(a.Region));
+        }
+        if (filterZeroUsed)
+        {
+            var usedArmyIds = armyUsedData.Select(a => a.ArmyId).Distinct().ToHashSet();
+            filteredArmies = filteredArmies.Where(a => !usedArmyIds.Contains(a.No));
+        }
+
+        var filteredArmiesList = filteredArmies.ToList();
+
+        if (filteredArmies.Count()>0)
+        {
+            var random = new Random();
+            randomArmy = filteredArmiesList[random.Next(filteredArmies.Count())];
+        }
+        else
+        {
+            randomArmy = null;
+        }
+    }
+}
+

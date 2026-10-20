@@ -1,0 +1,75 @@
+name: Publish static site to Cloudflare Pages
+
+# Runs when the static site or its data changes, or when started by hand from
+# the Actions tab. Tick "refresh_data" to pull fresh data from the database
+# first (needs the DB_CONNECTION secret and the SQL firewall open to GitHub);
+# otherwise the committed JSON in DracoStandardSite.Static/wwwroot/data is used.
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'DracoStandardSite.Static/**'
+      - 'DracoStandardSite.Shared/**'
+      - 'DracoStandardSite/wwwroot/files/**'
+      - '.github/workflows/static-site.yml'
+  workflow_dispatch:
+    inputs:
+      refresh_data:
+        description: 'Export fresh data from the database before publishing'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: static-site
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Export data from the database
+        if: ${{ inputs.refresh_data }}
+        env:
+          ConnectionStrings__DefaultConnection: ${{ secrets.DB_CONNECTION }}
+        run: dotnet run --project DracoStandardSite.Export/DracoStandardSite.Export.csproj -c Release
+
+      - name: Save refreshed data to the repository
+        if: ${{ inputs.refresh_data }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add DracoStandardSite.Static/wwwroot/data
+          git diff --cached --quiet || { git commit -m "Refresh site data"; git push; }
+
+      - name: Check the data files are present
+        run: |
+          if [ ! -f DracoStandardSite.Static/wwwroot/data/allrankings.json ]; then
+            echo "::error::No data files found. Run the DracoStandardSite.Export tool and commit DracoStandardSite.Static/wwwroot/data."
+            exit 1
+          fi
+
+      - name: Build the site
+        run: dotnet publish DracoStandardSite.Static/DracoStandardSite.Static.csproj -c Release -o publish
+
+      - name: Add the PDF downloads
+        run: |
+          mkdir -p publish/wwwroot/files
+          cp DracoStandardSite/wwwroot/files/*.pdf publish/wwwroot/files/
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy publish/wwwroot --project-name=dracostandard --branch=main

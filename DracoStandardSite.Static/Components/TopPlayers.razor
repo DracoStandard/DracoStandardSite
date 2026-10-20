@@ -1,0 +1,65 @@
+﻿<h3>Players</h3>
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+@using DracoStandardSite.Components
+
+@inject IRankingsService service
+
+
+
+@if (RList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+ <ol class = "list-group-numbered">
+      @foreach (var player in RList)
+            {
+       
+
+            <li class="list-group-item d-flex justify-content-between align-items-start" >
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">@player.Name</div>
+                    Score: @player.RankScore
+                </div>
+                <span class="badge bg-primary rounded-pill">@player.CompsPlayed</span>
+               
+             </li>
+             }
+
+     </ol>
+     }
+
+
+@code {
+
+
+
+
+    List<AllRankings> RList;
+
+    [Parameter] public string gameSystem { get; set; }
+
+
+
+    Guid PID;
+  
+
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+
+        RList = await service.getRankings(gameSystem, true);
+
+    }
+
+
+
+
+
+
+}

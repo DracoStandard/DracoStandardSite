@@ -1,0 +1,30 @@
+@using DracoStandardSite.Data
+@inject IRankingsService service
+
+<div>
+    <h5>Available PDFs</h5>
+    @if (pdfFiles == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var file in pdfFiles)
+            {
+                <li>
+                    <a href="@($"files/{file}")" download>@file</a>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private List<string> pdfFiles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pdfFiles = await service.GetPdfFiles();
+    }
+}

@@ -1,0 +1,80 @@
+﻿@if (old)
+{<h3> Old Competitions </h3> }
+else
+{<h3>Current Competitions</h3>}
+
+
+@inject NavigationManager NavigationHelper
+
+@using DracoStandardSite.Data
+@using DracoStandardSite.Models
+
+
+@inject IRankingsService service
+
+
+
+<CompResults @ref="compModal" CID=@CID></CompResults>
+
+@if (cList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+ 
+
+
+<ol class = "list-group-numbered">
+      @foreach (var comp in cList)
+            {
+       
+
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">@comp.Comp1</div>
+                    Players: @comp.Players
+                </div>
+
+
+                <button type="button" class="btn btn-primary" @onclick="()=>openModal(comp.CompId)">Details</button>
+                
+            </li>
+            }
+
+     </ol>
+
+}
+
+
+
+@code {
+
+    [Parameter]
+    public bool old { get; set; }
+
+    List<Comp> cList;
+    
+    Guid CID;
+    private CompResults compModal { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+
+    {
+
+
+        cList = await service.GetComps(old);
+       
+       
+    }
+
+    private async Task openModal(Guid c)
+
+
+    {
+       
+        CID = c;
+        compModal.Open();
+        StateHasChanged();
+    }
+    }
