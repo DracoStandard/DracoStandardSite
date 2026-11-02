@@ -3,6 +3,11 @@ name: Build and deploy to Azure Container Apps
 on:
   push:
     branches: [ master ]
+        paths-ignore:
+      - 'DracoStandardSite.Static/**'
+      - 'DracoStandardSite.Shared/**'
+      - 'DracoStandardSite.Export/**'
+      - '.github/workflows/static-site.yml'
   workflow_dispatch:
 
 permissions:
